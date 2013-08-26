@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
+
 #include "list.h"
 #include "huge_header.h"
 #include "queue.h"
+#include "utils.h"
 
 bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance)
 {

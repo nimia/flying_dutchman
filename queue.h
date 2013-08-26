@@ -3,6 +3,7 @@
 
 #include "list.h"
 #include "huge_header.h"
+#include "utils.h"
 
 typedef struct Queue {
 	Vertex_Num nodes_with_distance_head[DISTANCE_NUM_OF_POSSIBLE_VALUES];
