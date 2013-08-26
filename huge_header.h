@@ -13,8 +13,8 @@ typedef uint16_t Distance;
 #define DISTANCE_NUM_OF_POSSIBLE_VALUES (DISTANCE_INFINITY + 1)
 
 #define NUM_OF_VERTICES 36692
-typedef uint16_t Vertex_Num;
-#define INVALID_VERTEX (UINT16_MAX)
+typedef uint32_t Vertex_Num;
+#define INVALID_VERTEX (UINT32_MAX)
 
 typedef struct Node Node;
 

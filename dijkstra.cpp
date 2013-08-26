@@ -49,29 +49,28 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 	fclose(f);
 }
 
-void dijkstra(Graph *graph, Node *source)
+void dijkstra(Graph *graph, Node *source, Queue *q)
 {
-	Queue q;
-	Queue__init(&q);
+	Queue__init(q);
 
-	Queue__insert(&q, source, 0, graph);
+	Queue__insert(q, source, 0, graph);
 
-	Node *u = Queue__pop_min(&q, graph);
+	Node *u = Queue__pop_min(q, graph);
 	while (u) {
 		for (list<Node_And_Distance>::iterator i = u->neighbors.begin(); i != u->neighbors.end(); ++i) {
 			Node *v = (*i).node;
-			Distance alt = u->distance + (*i).distance;
+			Distance new_distance = u->distance + (*i).distance;
 
-			if (alt < v->distance) {
-				v->distance = alt;
-				Queue__decrease_key(&q, v, v->distance, graph);
+			if (new_distance < v->distance) {
+				Queue__decrease_key(q, v, new_distance, graph);
 			}
 		}
 
-		u = Queue__pop_min(&q, graph);
+		u = Queue__pop_min(q, graph);
 	}
 }
 
+Queue the_queue;
 Graph the_graph;
 int main()
 {
