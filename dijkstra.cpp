@@ -9,15 +9,25 @@
 #include "huge_header.h"
 #include "queue.h"
 
-bool_t parse_line(char *line, char delimiter, int *first, int *second)
+bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance)
 {
-	if (strcmp(line, "\r\n") == 0) {
+	if (!strcmp(line, "\r\n") || !strcmp(line, "\n")) {
 		return FALSE;
 	}
-	char *delimiter_in_line = strchr(line, delimiter);
-	*delimiter_in_line = '\0';
-	*first = atoi(line);
-	*second = atoi(delimiter_in_line + 1);
+
+	char *start = line;
+	char *end = strchr(start, delimiter);
+	*end = '\0';
+	*first = atoi(start);
+
+	start = end + 1;
+	end = strchr(start, delimiter);
+	*end = '\0';
+	*second = atoi(start);
+
+	start = end + 1;
+	*distance = atoi(start);
+
 	return TRUE;
 }
 
@@ -35,25 +45,37 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 	char line[128];
 
 	while (fgets(line, sizeof line, f) != NULL ) {
-		int first, second;
-		if (parse_line(line, delimiter, &first, &second)) {
+		Vertex_Num first, second;
+		Distance distance;
+
+		if (parse_line(line, delimiter, &first, &second, &distance)) {
 			if (first >= NUM_OF_VERTICES || second >= NUM_OF_VERTICES) {
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
 			}
+
 			Node *first_node = &graph->nodes[first];
 			Node *second_node = &graph->nodes[second];
-			first_node->neighbors.push_front({second_node, 1});
+			first_node->neighbors.push_front({second_node, distance});
+			DEBUG("%d => %d, distance %d\n", first, second, distance);
 		}
 	}
+
 	fclose(f);
 }
 
-void dijkstra(Graph *graph, Node *source, Queue *q)
+void print_distances(Graph *graph)
+{
+	for (int i = 1; i < 5; i++) {
+		DEBUG("%d %d\n", i, graph->nodes[i].distance);
+	}
+}
+
+void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 {
 	Queue__init(q);
 
-	Queue__insert(q, source, 0, graph);
+	Queue__insert(q, &graph->nodes[source], 0, graph);
 
 	Node *u = Queue__pop_min(q, graph);
 	while (u) {
@@ -72,7 +94,10 @@ void dijkstra(Graph *graph, Node *source, Queue *q)
 
 Queue the_queue;
 Graph the_graph;
+
 int main()
 {
-	return 1;
+	load_graph("example", ' ', &the_graph);
+	dijkstra(&the_graph, 1, &the_queue);
+	print_distances(&the_graph);
 }

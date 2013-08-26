@@ -43,4 +43,8 @@ typedef enum bool_t {
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
+#define DEBUG_PRINTS 1
+#define DEBUG(fmt, ...) \
+            do { if (DEBUG_PRINTS) printf(fmt, __VA_ARGS__); } while (0)
+
 #endif

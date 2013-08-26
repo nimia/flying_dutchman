@@ -24,8 +24,9 @@ static inline void Queue__init(Queue *queue)
 
 static inline void Queue__insert(Queue *queue, Node *node, Distance distance, struct Graph *graph)
 {
+	DEBUG("inserting %d with distance %d\n", node->vertex_num, distance);
 	node->distance = distance;
-	Vertex_Num *cell = queue->nodes_with_distance_head[distance];
+	Vertex_Num *cell = &queue->nodes_with_distance_head[distance];
 
 	if (*cell != INVALID_VERTEX) {
 		list_add(&node->equi_distance_nodes, &graph->nodes[*cell].equi_distance_nodes);
@@ -40,7 +41,7 @@ static inline void Queue__insert(Queue *queue, Node *node, Distance distance, st
 // this should be internal
 static inline void Queue__delete(Queue *queue, Node *node)
 {
-	Vertex_Num *cell = queue->nodes_with_distance_head[node->distance];
+	Vertex_Num *cell = &queue->nodes_with_distance_head[node->distance];
 
 	if (list_empty(&node->equi_distance_nodes)) {
 		*cell = INVALID_VERTEX;
@@ -59,6 +60,7 @@ static inline Node *Queue__pop_min(Queue *queue, Graph *graph)
 		if (vertex_num != INVALID_VERTEX) {
 			Node *node = &graph->nodes[vertex_num];
 			Queue__delete(queue, node);
+			DEBUG("popped min %d\n", node->vertex_num);
 			return node;
 		}
 		queue->current_cell_num++;
