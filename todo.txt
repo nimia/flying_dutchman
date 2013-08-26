@@ -1,3 +1,17 @@
-switch to normal build system (ninja? tup? re-read neil mitchell's blog post on this). remove stl examples from build
+scholarship forms
 
+http://www.dis.uniroma1.it/challenge9/download.shtml
+
+find out about cache line prefetch
+
+merkle mess!!!
+
+
+
+switch to normal build system? (ninja? tup? re-read neil mitchell's blog post on this)
+Node/Vertex
+Huge header
+delete_node duplicity
+proper namespacing: INVALID_VERTEX
+add main.c
 

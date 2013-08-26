@@ -4,31 +4,33 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "global.h"
-#include "gnu_stl/trie.h"
 #include <unistd.h>
-#include <list>
+#include "list.h"
+#include "huge_header.h"
+#include "queue.h"
 
-using namespace std;
-
-struct Graph {
-	list<Vertex_And_Distance> _neighbors[NUM_OF_VERTICES];
-};
-
-bool parse_line(char *line, char delimiter, int *first, int *second)
+bool_t parse_line(char *line, char delimiter, int *first, int *second)
 {
 	if (strcmp(line, "\r\n") == 0) {
-		return false;
+		return FALSE;
 	}
 	char *delimiter_in_line = strchr(line, delimiter);
 	*delimiter_in_line = '\0';
 	*first = atoi(line);
 	*second = atoi(delimiter_in_line + 1);
-	return true;
+	return TRUE;
 }
 
-void load_graph(char *filename, char delimiter, Graph &graph)
+void load_graph(char *filename, char delimiter, Graph *graph)
 {
+	for (int i = 0; i < NUM_OF_VERTICES; i++) {
+		Node *node = &graph->nodes[i];
+		INIT_LIST_HEAD(&node->equi_distance_nodes);
+		node->neighbors.clear();
+		node->distance = DISTANCE_INFINITY;
+		node->vertex_num = i;
+	}
+
 	FILE *f = fopen(filename, "r");
 	char line[128];
 
@@ -39,38 +41,35 @@ void load_graph(char *filename, char delimiter, Graph &graph)
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
 			}
-			graph._neighbors[first].push_front({(Vertex)second, 1});
+			Node *first_node = &graph->nodes[first];
+			Node *second_node = &graph->nodes[second];
+			first_node->neighbors.push_front({second_node, 1});
 		}
 	}
 	fclose(f);
 }
 
-void dijkstra(Graph &graph, Vertex source, Distance distances[NUM_OF_VERTICES])
+void dijkstra(Graph *graph, Node *source)
 {
-//	Queue q;
-//	Queue__init(&q);
-//
-//	for (int i = 0; i < NUM_OF_VERTICES; i++) {
-//		distances[i] = DISTANCE_INFINITY;
-//	}
-//
-//	Queue__insert(&q, source, 0);
-//	distances[source] = 0;
-//
-//	while (!Queue__is_empty(&q)) {
-//		Vertex u = Queue__pop_min(&q);
-//		if (distances[u] == DISTANCE_INFINITY) {
-//			return;
-//		}
-//		for (list<Vertex_And_Distance>::iterator i = graph._neighbors[u].begin(); i != graph._neighbors[u].end(); ++i) {
-//			Vertex v = (*i)._vertex;
-//			Distance alt = distances[u] + (*i)._distance;
-//			if (alt < distances[v]) {
-//				distances[v] = alt;
-//				Queue__decrease_key(&q, queue_elements[v], distances[v]);
-//			}
-//		}
-//	}
+	Queue q;
+	Queue__init(&q);
+
+	Queue__insert(&q, source, 0, graph);
+
+	Node *u = Queue__pop_min(&q, graph);
+	while (u) {
+		for (list<Node_And_Distance>::iterator i = u->neighbors.begin(); i != u->neighbors.end(); ++i) {
+			Node *v = (*i).node;
+			Distance alt = u->distance + (*i).distance;
+
+			if (alt < v->distance) {
+				v->distance = alt;
+				Queue__decrease_key(&q, v, v->distance, graph);
+			}
+		}
+
+		u = Queue__pop_min(&q, graph);
+	}
 }
 
 Graph the_graph;
