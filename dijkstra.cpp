@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #include "list.h"
-#include "huge_header.h"
+#include "graph.h"
 #include "queue.h"
 #include "utils.h"
 

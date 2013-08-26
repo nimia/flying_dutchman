@@ -1,5 +1,5 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #include "sized_ints.h"
 

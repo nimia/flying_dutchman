@@ -2,7 +2,7 @@
 #define QUEUE_H
 
 #include "list.h"
-#include "huge_header.h"
+#include "graph.h"
 #include "utils.h"
 
 typedef struct Queue {
