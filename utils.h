@@ -6,6 +6,7 @@ typedef enum bool_t {
 	TRUE = 1
 } bool_t;
 
+// We need this because of some template shit when comparing Distance and uint64_t
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 #define DEBUG_PRINTS 1
