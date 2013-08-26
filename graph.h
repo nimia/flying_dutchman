@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include "sized_ints.h"
+#include "list.h"
 
 #include <list>
 using namespace std;
