@@ -16,7 +16,7 @@ typedef struct Queue {
 
 static inline void Queue__init(Queue *queue)
 {
-	for (uint64_t i = 0; i < DISTANCE_NUM_OF_POSSIBLE_VALUES; i++) {
+	for (int64_t i = 0; i < DISTANCE_NUM_OF_POSSIBLE_VALUES; i++) {
 		queue->nodes_with_distance_head[i] = INVALID_VERTEX;
 	}
 	queue->current_cell_num = 0;
