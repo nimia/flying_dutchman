@@ -60,7 +60,7 @@ static inline Node *Queue__pop_min(Queue *queue, Graph *graph)
 		if (vertex_num != INVALID_VERTEX) {
 			Node *node = &graph->nodes[vertex_num];
 			Queue__delete(queue, node);
-			DEBUG("popped min %d\n", node->vertex_num);
+			DEBUG("popped min %d with distance %d\n", node->vertex_num, node->distance);
 			return node;
 		}
 		queue->current_cell_num++;
