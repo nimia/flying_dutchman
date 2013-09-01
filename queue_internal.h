@@ -36,11 +36,9 @@ typedef struct Queue {
 	int64_t max_distance_ever_seen;
 } Queue;
 
-#define QUEUE__NUM_OF_ARRAY_ENTRIES_RESET_ON_INIT 1000000
-
 static inline void Queue__init(Queue *queue)
 {
-	for (int64_t i = 0; i < QUEUE__NUM_OF_ARRAY_ENTRIES_RESET_ON_INIT; i++) {
+	for (int64_t i = 0; i < DISTANCE_QUEUE_QUICK_INIT_PREFIX_LENGTH; i++) {
 		queue->equi_distance_vertexs_head_vertex_num[i] = VERTEX__INVALID_VERTEX;
 	}
 	queue->min_distance_candidate = 0;
