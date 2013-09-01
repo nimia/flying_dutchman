@@ -84,8 +84,13 @@ void print_distances(Graph *graph)
 Queue the_queue;
 Graph the_graph;
 
-int main(int argc, char *argv[])
+int main(int, char *argv[])
 {
+	if (!strcmp(argv[1], "test")) {
+		run_all_tests();
+		exit(0);
+	}
+
 	load_graph("example", ' ', &the_graph);
 	dijkstra(&the_graph, 1, &the_queue);
 	print_distances(&the_graph);
