@@ -37,8 +37,8 @@ bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *sec
 void reset_graph(Graph *graph)
 {
 	for (int i = 0; i < VERTEX__MAX_NUM_OF_VERTICES; i++) {
-		Vertex *vertex = &graph->vertexs[i];
-		INIT_LIST_HEAD(&vertex->equi_distance_vertexs);
+		Vertex *vertex = &graph->vertices[i];
+		INIT_LIST_HEAD(&vertex->equi_distance_vertices);
 		vertex->neighbors.clear();
 		vertex->distance = DISTANCE_INFINITY;
 		vertex->vertex_num = i;
@@ -54,7 +54,7 @@ void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_
 	FILE *f = fopen(filename, "r");
 	char line[128];
 
-	Vertex *vertex_with_most_edges = &graph->vertexs[0];
+	Vertex *vertex_with_most_edges = &graph->vertices[0];
 	while (fgets(line, sizeof line, f) != NULL ) {
 		Vertex_Num first, second;
 		Distance distance;
@@ -67,8 +67,8 @@ void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_
 
 			graph->max_vertex_num = MAX(graph->max_vertex_num, MAX(first, second));
 
-			Vertex *first_vertex = &graph->vertexs[first];
-			Vertex *second_vertex = &graph->vertexs[second];
+			Vertex *first_vertex = &graph->vertices[first];
+			Vertex *second_vertex = &graph->vertices[second];
 			first_vertex->neighbors.push_front({second_vertex, distance});
 
 			if (first_vertex->neighbors.size() > vertex_with_most_edges->neighbors.size()) {
@@ -89,7 +89,7 @@ void print_distances(Graph *graph)
 	Distance max_distance = 0;
 
 	for (int i = 0; i <= graph->max_vertex_num; i++) {
-		Distance distance = graph->vertexs[i].distance;
+		Distance distance = graph->vertices[i].distance;
 
 		if (distance != DISTANCE_INFINITY) {
 			printf("%d %d\n", i, distance);

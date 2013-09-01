@@ -4,19 +4,19 @@
 #include <assert.h>
 
 Graph *graph;
-Vertex *vertexs;
+Vertex *vertices;
 Queue *q;
 
 #define EQUAL(x, y, z, w) ((x) == (z) && (y) == (w)) || ((x) == (w) && (y) == (z))
 
 int pop_min()
 {
-	return Queue__pop_min(q, &the_graph) - &the_graph.vertexs[0];
+	return Queue__pop_min(q, &the_graph) - &the_graph.vertices[0];
 }
 
 void insert(Vertex_Num v, Distance d)
 {
-	Queue__insert(q, &vertexs[v], d, graph);
+	Queue__insert(q, &vertices[v], d, graph);
 }
 
 void test_insert_pop_min()
@@ -31,7 +31,7 @@ void test_insert_pop_min()
 	assert(EQUAL(v1, v2, 0, 1));
 }
 
-void test_inserting_two_vertexs_with_zero_distance()
+void test_inserting_two_vertices_with_zero_distance()
 {
 	Queue__init(q);
 
@@ -53,7 +53,7 @@ void test_inserting_vertex_with_3_dist_then_2_dist()
 void run_all_tests()
 {
 	graph = &the_graph;
-	vertexs = &graph->vertexs[0];
+	vertices = &graph->vertices[0];
 	q = the_queue;
 
 	load_graph("example", ' ', graph, 0);

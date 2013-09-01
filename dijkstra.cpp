@@ -4,7 +4,7 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 {
 	Queue__init(q);
 
-	Queue__insert(q, &graph->vertexs[source], 0, graph);
+	Queue__insert(q, &graph->vertices[source], 0, graph);
 
 	Vertex *u = Queue__pop_min(q, graph);
 	while (u) {
