@@ -39,7 +39,7 @@ typedef struct Queue {
 static inline void Queue__init(Queue *queue)
 {
 	for (int64_t i = 0; i < DISTANCE_NUM_OF_POSSIBLE_VALUES; i++) {
-		queue->equi_distance_nodes_head_vertex_num[i] = INVALID_VERTEX;
+		queue->equi_distance_nodes_head_vertex_num[i] = VERTEX__INVALID_VERTEX;
 	}
 	queue->min_distance_candidate = 0;
 	queue->max_distance_ever_seen = 0;
@@ -58,7 +58,7 @@ static inline void Queue__insert(Queue *queue, Node *node, Distance distance, st
 	Vertex_Num *equi_distance_nodes_head_vertex_nump = &queue->equi_distance_nodes_head_vertex_num[distance];
 	Vertex_Num equi_distance_nodes_head_vertex_num = *equi_distance_nodes_head_vertex_nump;
 
-	if (equi_distance_nodes_head_vertex_num != INVALID_VERTEX) {
+	if (equi_distance_nodes_head_vertex_num != VERTEX__INVALID_VERTEX) {
 		list_add(&node->equi_distance_nodes, &graph->nodes[equi_distance_nodes_head_vertex_num].equi_distance_nodes);
 	} else {
 		INIT_LIST_HEAD(&node->equi_distance_nodes);
@@ -73,7 +73,7 @@ static inline void Queue__delete(Queue *queue, Node *node)
 	Vertex_Num *equi_distance_nodes_head_vertex_nump = &queue->equi_distance_nodes_head_vertex_num[node->distance];
 
 	if (list_empty(&node->equi_distance_nodes)) {
-		*equi_distance_nodes_head_vertex_nump = INVALID_VERTEX;
+		*equi_distance_nodes_head_vertex_nump = VERTEX__INVALID_VERTEX;
 	} else {
 		Node *new_head = list_entry(node->equi_distance_nodes.next, Node, equi_distance_nodes);
 		*equi_distance_nodes_head_vertex_nump = new_head->vertex_num;
@@ -87,7 +87,7 @@ static inline Node *Queue__pop_min(Queue *queue, Graph *graph)
 		Vertex_Num *equi_distance_nodes_head_vertex_nump = &queue->equi_distance_nodes_head_vertex_num[queue->min_distance_candidate];
 		Vertex_Num equi_distance_nodes_head_vertex_num = *equi_distance_nodes_head_vertex_nump;
 
-		if (equi_distance_nodes_head_vertex_num != INVALID_VERTEX) {
+		if (equi_distance_nodes_head_vertex_num != VERTEX__INVALID_VERTEX) {
 			Node *node = &graph->nodes[equi_distance_nodes_head_vertex_num];
 			Queue__delete(queue, node);
 			DEBUG("popped min %d with distance %d\n", node->vertex_num, node->distance);

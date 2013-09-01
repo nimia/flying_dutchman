@@ -34,7 +34,7 @@ bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *sec
 
 void reset_graph(Graph *graph)
 {
-	for (int i = 0; i < MAX_NUM_OF_VERTICES; i++) {
+	for (int i = 0; i < VERTEX__MAX_NUM_OF_VERTICES; i++) {
 		Node *node = &graph->nodes[i];
 		INIT_LIST_HEAD(&node->equi_distance_nodes);
 		node->neighbors.clear();
@@ -57,7 +57,7 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 		Distance distance;
 
 		if (parse_line(line, delimiter, &first, &second, &distance)) {
-			if (MAX(first, second) >= MAX_NUM_OF_VERTICES) {
+			if (MAX(first, second) >= VERTEX__MAX_NUM_OF_VERTICES) {
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
 			}
