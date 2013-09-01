@@ -32,15 +32,22 @@ bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *sec
 	return TRUE;
 }
 
-void load_graph(char *filename, char delimiter, Graph *graph)
+void reset_graph(Graph *graph)
 {
-	for (int i = 0; i < NUM_OF_VERTICES; i++) {
+	for (int i = 0; i < MAX_NUM_OF_VERTICES; i++) {
 		Node *node = &graph->nodes[i];
 		INIT_LIST_HEAD(&node->equi_distance_nodes);
 		node->neighbors.clear();
 		node->distance = DISTANCE_INFINITY;
 		node->vertex_num = i;
 	}
+
+	graph->max_vertex_num = -1;
+}
+
+void load_graph(char *filename, char delimiter, Graph *graph)
+{
+	reset_graph(graph);
 
 	FILE *f = fopen(filename, "r");
 	char line[128];
@@ -50,10 +57,12 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 		Distance distance;
 
 		if (parse_line(line, delimiter, &first, &second, &distance)) {
-			if (first >= NUM_OF_VERTICES || second >= NUM_OF_VERTICES) {
+			if (MAX(first, second) >= MAX_NUM_OF_VERTICES) {
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
 			}
+
+			graph->max_vertex_num = MAX(graph->max_vertex_num, MAX(first, second));
 
 			Node *first_node = &graph->nodes[first];
 			Node *second_node = &graph->nodes[second];
@@ -67,7 +76,7 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 
 void print_distances(Graph *graph)
 {
-	for (int i = 1; i < 5; i++) {
+	for (int i = 0; i <= graph->max_vertex_num; i++) {
 		DEBUG("%d %d\n", i, graph->nodes[i].distance);
 	}
 }
@@ -75,7 +84,7 @@ void print_distances(Graph *graph)
 Queue the_queue;
 Graph the_graph;
 
-int main()
+int main(int argc, char *argv[])
 {
 	load_graph("example", ' ', &the_graph);
 	dijkstra(&the_graph, 1, &the_queue);

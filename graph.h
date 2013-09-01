@@ -22,7 +22,8 @@ typedef struct Node {
 } Node;
 
 typedef struct Graph {
-	Node nodes[NUM_OF_VERTICES];
+	int32_t max_vertex_num;
+	Node nodes[MAX_NUM_OF_VERTICES];
 } Graph;
 
 #endif
