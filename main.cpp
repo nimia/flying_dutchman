@@ -35,11 +35,11 @@ bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *sec
 void reset_graph(Graph *graph)
 {
 	for (int i = 0; i < VERTEX__MAX_NUM_OF_VERTICES; i++) {
-		Node *node = &graph->nodes[i];
-		INIT_LIST_HEAD(&node->equi_distance_nodes);
-		node->neighbors.clear();
-		node->distance = DISTANCE_INFINITY;
-		node->vertex_num = i;
+		Vertex *vertex = &graph->vertexs[i];
+		INIT_LIST_HEAD(&vertex->equi_distance_vertexs);
+		vertex->neighbors.clear();
+		vertex->distance = DISTANCE_INFINITY;
+		vertex->vertex_num = i;
 	}
 
 	graph->max_vertex_num = -1;
@@ -64,9 +64,9 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 
 			graph->max_vertex_num = MAX(graph->max_vertex_num, MAX(first, second));
 
-			Node *first_node = &graph->nodes[first];
-			Node *second_node = &graph->nodes[second];
-			first_node->neighbors.push_front({second_node, distance});
+			Vertex *first_vertex = &graph->vertexs[first];
+			Vertex *second_vertex = &graph->vertexs[second];
+			first_vertex->neighbors.push_front({second_vertex, distance});
 			DEBUG("%d => %d, distance %d\n", first, second, distance);
 		}
 	}
@@ -77,16 +77,16 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 void print_distances(Graph *graph)
 {
 	for (int i = 0; i <= graph->max_vertex_num; i++) {
-		DEBUG("%d %d\n", i, graph->nodes[i].distance);
+		DEBUG("%d %d\n", i, graph->vertexs[i].distance);
 	}
 }
 
 Queue the_queue;
 Graph the_graph;
 
-int main(int, char *argv[])
+int main(int argc, char *argv[])
 {
-	if (!strcmp(argv[1], "test")) {
+	if (argc == 2 && !strcmp(argv[1], "test")) {
 		run_all_tests();
 		exit(0);
 	}

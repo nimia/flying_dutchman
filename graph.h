@@ -7,23 +7,23 @@
 #include <list>
 using namespace std;
 
-typedef struct Node Node;
+typedef struct Vertex Vertex;
 
-typedef struct Node_And_Distance {
-	Node *node;
+typedef struct Vertex_And_Distance {
+	Vertex *vertex;
 	Distance distance;
-} Node_And_Distance;
+} Vertex_And_Distance;
 
-typedef struct Node {
-	struct list_head equi_distance_nodes;
-	list<Node_And_Distance> neighbors;
+typedef struct Vertex {
+	struct list_head equi_distance_vertexs;
+	list<Vertex_And_Distance> neighbors;
 	Distance distance;
 	Vertex_Num vertex_num;
-} Node;
+} Vertex;
 
 typedef struct Graph {
 	int32_t max_vertex_num;
-	Node nodes[VERTEX__MAX_NUM_OF_VERTICES];
+	Vertex vertexs[VERTEX__MAX_NUM_OF_VERTICES];
 } Graph;
 
 #endif

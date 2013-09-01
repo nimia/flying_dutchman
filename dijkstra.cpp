@@ -4,12 +4,12 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 {
 	Queue__init(q);
 
-	Queue__insert(q, &graph->nodes[source], 0, graph);
+	Queue__insert(q, &graph->vertexs[source], 0, graph);
 
-	Node *u = Queue__pop_min(q, graph);
+	Vertex *u = Queue__pop_min(q, graph);
 	while (u) {
-		for (list<Node_And_Distance>::iterator i = u->neighbors.begin(); i != u->neighbors.end(); ++i) {
-			Node *v = (*i).node;
+		for (list<Vertex_And_Distance>::iterator i = u->neighbors.begin(); i != u->neighbors.end(); ++i) {
+			Vertex *v = (*i).vertex;
 			Distance new_distance = u->distance + (*i).distance;
 
 			if (new_distance < v->distance) {
