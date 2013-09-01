@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "queue_test.h"
 
@@ -12,11 +13,13 @@
 
 bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance)
 {
-	if (!strcmp(line, "\r\n") || !strcmp(line, "\n")) {
+	if (!strcmp(line, "\r\n") || !strcmp(line, "\n") || line[0] == 'c') {
 		return FALSE;
 	}
 
-	char *start = line;
+	assert(line[0] == 'a');
+
+	char *start = line + 2;
 	char *end = strchr(start, delimiter);
 	*end = '\0';
 	*first = atoi(start);
