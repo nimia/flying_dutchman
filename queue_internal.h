@@ -49,11 +49,6 @@ static inline void Queue__insert(Queue *queue, Vertex *vertex, Distance distance
 {
 	DEBUG("inserting %d with distance %d\n", vertex->vertex_num, distance);
 
-	if (distance >= DISTANCE_MAX) {
-		printf("Encountered too great of a distance: %d, for vertex %d\n", distance, vertex->vertex_num);
-		abort();
-	}
-
 	if (queue->max_distance_ever_seen < distance) {
 		for (uint64_t i = queue->max_distance_ever_seen + 1; i <= distance; i++) {
 			queue->equi_distance_vertexs_head_vertex_num[i] = VERTEX__INVALID_VERTEX;

@@ -10,7 +10,12 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 	while (u) {
 		for (list<Vertex_And_Distance>::iterator i = u->neighbors.begin(); i != u->neighbors.end(); ++i) {
 			Vertex *v = (*i).vertex;
-			Distance new_distance = u->distance + (*i).distance;
+			uint64_t new_distance = u->distance + (*i).distance;
+
+			if (new_distance >= DISTANCE_MAX) {
+				printf("Encountered too great of a distance: %lu, for vertex %d\n", new_distance, v->vertex_num);
+				abort();
+			}
 
 			if (new_distance < v->distance) {
 				Queue__decrease_key(q, v, new_distance, graph);

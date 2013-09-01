@@ -11,7 +11,7 @@ typedef enum bool_t {
 // We need this because of some template shit when comparing Distance and uint64_t
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-#define DEBUG_PRINTS 1
+//#define DEBUG_PRINTS 1
 #ifdef DEBUG_PRINTS
 #define DEBUG(fmt, ...) \
             do { printf(fmt, __VA_ARGS__); } while (0)

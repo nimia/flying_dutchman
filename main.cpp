@@ -54,6 +54,7 @@ void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_
 	FILE *f = fopen(filename, "r");
 	char line[128];
 
+	Vertex *vertex_with_most_edges = &graph->vertexs[0];
 	while (fgets(line, sizeof line, f) != NULL ) {
 		Vertex_Num first, second;
 		Distance distance;
@@ -69,18 +70,35 @@ void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_
 			Vertex *first_vertex = &graph->vertexs[first];
 			Vertex *second_vertex = &graph->vertexs[second];
 			first_vertex->neighbors.push_front({second_vertex, distance});
+
+			if (first_vertex->neighbors.size() > vertex_with_most_edges->neighbors.size()) {
+				vertex_with_most_edges = first_vertex;
+			}
+
 			DEBUG("%d => %d, distance %d\n", first, second, distance);
 		}
 	}
 
+	printf("Vertex with most edges is %d\n", vertex_with_most_edges->vertex_num);
 	fclose(f);
 }
 
 void print_distances(Graph *graph)
 {
+	int num_of_covered_vertices = 0;
+	Distance max_distance = 0;
+
 	for (int i = 0; i <= graph->max_vertex_num; i++) {
-		DEBUG("%d %d\n", i, graph->vertexs[i].distance);
+		Distance distance = graph->vertexs[i].distance;
+
+		if (distance != DISTANCE_INFINITY) {
+			printf("%d %d\n", i, distance);
+			num_of_covered_vertices++;
+			max_distance = MAX(max_distance, distance);
+		}
 	}
+
+	printf("Covered %d vertices, max distance is %d\n", num_of_covered_vertices, max_distance);
 }
 
 Queue *the_queue;
@@ -95,7 +113,12 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	load_graph("example", ' ', &the_graph, 0);
-	dijkstra(&the_graph, 1, the_queue);
+	if (argc == 1) {
+		load_graph("example", ' ', &the_graph, 0);
+		dijkstra(&the_graph, 1, the_queue);
+	} else {
+		load_graph(argv[1], ' ', &the_graph, 2);
+		dijkstra(&the_graph, atoi(argv[2]), the_queue);
+	}
 	print_distances(&the_graph);
 }
