@@ -11,15 +11,14 @@
 #include "utils.h"
 #include "dijkstra.h"
 
-bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance,
+		int skip_chars_in_line_start)
 {
 	if (!strcmp(line, "\r\n") || !strcmp(line, "\n") || line[0] == 'c') {
 		return FALSE;
 	}
 
-	assert(line[0] == 'a');
-
-	char *start = line + 2;
+	char *start = line + skip_chars_in_line_start;
 	char *end = strchr(start, delimiter);
 	*end = '\0';
 	*first = atoi(start);
@@ -48,7 +47,7 @@ void reset_graph(Graph *graph)
 	graph->max_vertex_num = -1;
 }
 
-void load_graph(char *filename, char delimiter, Graph *graph)
+void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_line_start)
 {
 	reset_graph(graph);
 
@@ -59,7 +58,7 @@ void load_graph(char *filename, char delimiter, Graph *graph)
 		Vertex_Num first, second;
 		Distance distance;
 
-		if (parse_line(line, delimiter, &first, &second, &distance)) {
+		if (parse_line(line, delimiter, &first, &second, &distance, skip_chars_in_line_start)) {
 			if (MAX(first, second) >= VERTEX__MAX_NUM_OF_VERTICES) {
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
@@ -84,17 +83,19 @@ void print_distances(Graph *graph)
 	}
 }
 
-Queue the_queue;
+Queue *the_queue;
 Graph the_graph;
 
 int main(int argc, char *argv[])
 {
+	the_queue = (Queue *)malloc(sizeof(Queue));
+
 	if (argc == 2 && !strcmp(argv[1], "test")) {
 		run_all_tests();
 		exit(0);
 	}
 
-	load_graph("example", ' ', &the_graph);
-	dijkstra(&the_graph, 1, &the_queue);
+	load_graph("example", ' ', &the_graph, 0);
+	dijkstra(&the_graph, 1, the_queue);
 	print_distances(&the_graph);
 }

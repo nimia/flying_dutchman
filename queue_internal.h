@@ -36,9 +36,11 @@ typedef struct Queue {
 	int64_t max_distance_ever_seen;
 } Queue;
 
+#define QUEUE__NUM_OF_ARRAY_ENTRIES_RESET_ON_INIT 1000000
+
 static inline void Queue__init(Queue *queue)
 {
-	for (int64_t i = 0; i < DISTANCE_NUM_OF_POSSIBLE_VALUES; i++) {
+	for (int64_t i = 0; i < QUEUE__NUM_OF_ARRAY_ENTRIES_RESET_ON_INIT; i++) {
 		queue->equi_distance_vertexs_head_vertex_num[i] = VERTEX__INVALID_VERTEX;
 	}
 	queue->min_distance_candidate = 0;
@@ -54,6 +56,14 @@ static inline void Queue__insert(Queue *queue, Vertex *vertex, Distance distance
 		abort();
 	}
 
+	if (queue->max_distance_ever_seen < distance) {
+		for (uint64_t i = queue->max_distance_ever_seen + 1; i <= distance; i++) {
+			queue->equi_distance_vertexs_head_vertex_num[i] = VERTEX__INVALID_VERTEX;
+		}
+
+		queue->max_distance_ever_seen = distance;
+	}
+
 	vertex->distance = distance;
 	Vertex_Num *equi_distance_vertexs_head_vertex_nump = &queue->equi_distance_vertexs_head_vertex_num[distance];
 	Vertex_Num equi_distance_vertexs_head_vertex_num = *equi_distance_vertexs_head_vertex_nump;
@@ -64,8 +74,6 @@ static inline void Queue__insert(Queue *queue, Vertex *vertex, Distance distance
 		INIT_LIST_HEAD(&vertex->equi_distance_vertexs);
 		*equi_distance_vertexs_head_vertex_nump = vertex->vertex_num;
 	}
-
-	queue->max_distance_ever_seen = MAX(queue->max_distance_ever_seen, distance);
 }
 
 static inline void Queue__delete(Queue *queue, Vertex *vertex)

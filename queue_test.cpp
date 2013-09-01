@@ -3,15 +3,15 @@
 
 #include <assert.h>
 
-Graph *graph = &the_graph;
-Vertex *vertexs = the_graph.vertexs;
-Queue *q = &the_queue;
+Graph *graph;
+Vertex *vertexs;
+Queue *q;
 
 #define EQUAL(x, y, z, w) ((x) == (z) && (y) == (w)) || ((x) == (w) && (y) == (z))
 
 int pop_min()
 {
-	return Queue__pop_min(&the_queue, &the_graph) - &the_graph.vertexs[0];
+	return Queue__pop_min(q, &the_graph) - &the_graph.vertexs[0];
 }
 
 void insert(Vertex_Num v, Distance d)
@@ -52,7 +52,11 @@ void test_inserting_vertex_with_3_dist_then_2_dist()
 
 void run_all_tests()
 {
-	load_graph("example", ' ', graph);
+	graph = &the_graph;
+	vertexs = &graph->vertexs[0];
+	q = the_queue;
+
+	load_graph("example", ' ', graph, 0);
 
 	test_insert_pop_min();
 	test_insert_pop_min();
