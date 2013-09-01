@@ -21,7 +21,7 @@ static inline void Queue__init(Queue *queue)
 	}
 	queue->current_cell_num = 0;
 	queue->max_distance_ever_seen = 0;
-};
+}
 
 static inline void Queue__insert(Queue *queue, Node *node, Distance distance, struct Graph *graph)
 {
@@ -37,7 +37,7 @@ static inline void Queue__insert(Queue *queue, Node *node, Distance distance, st
 	}
 
 	queue->max_distance_ever_seen = MAX(queue->max_distance_ever_seen, distance);
-};
+}
 
 static inline void Queue__delete(Queue *queue, Node *node)
 {
@@ -46,7 +46,8 @@ static inline void Queue__delete(Queue *queue, Node *node)
 	if (list_empty(&node->equi_distance_nodes)) {
 		*cell = INVALID_VERTEX;
 	} else {
-		*cell = list_entry(node->equi_distance_nodes.next, Node, equi_distance_nodes);
+		Node *new_head = list_entry(node->equi_distance_nodes.next, Node, equi_distance_nodes);
+		*cell = new_head->vertex_num;
 		list_del_init(&node->equi_distance_nodes);
 	}
 }
@@ -67,7 +68,7 @@ static inline Node *Queue__pop_min(Queue *queue, Graph *graph)
 	}
 
 	return NULL;
-};
+}
 
 static inline void Queue__decrease_key(Queue *queue, Node *node, Distance new_distance, Graph *graph)
 {

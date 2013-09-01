@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "queue_test.h"
+
 #include "list.h"
 #include "graph.h"
 #include "queue.h"

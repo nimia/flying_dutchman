@@ -12,7 +12,12 @@ typedef enum bool_t {
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 #define DEBUG_PRINTS 1
+#ifdef DEBUG_PRINTS
 #define DEBUG(fmt, ...) \
-            do { if (DEBUG_PRINTS) printf(fmt, __VA_ARGS__); } while (0)
+            do { printf(fmt, __VA_ARGS__); } while (0)
+#else
+#define DEBUG(fmt, ...) \
+            do {} while (0)
+#endif
 
 #endif
