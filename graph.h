@@ -9,14 +9,14 @@ using namespace std;
 
 typedef struct Vertex Vertex;
 
-typedef struct Vertex_And_Distance {
-	Vertex *vertex;
+typedef struct Edge {
+	Vertex *dest;
 	Distance distance;
-} Vertex_And_Distance;
+} Edge;
 
 typedef struct Vertex {
 	struct list_head equi_distance_vertices;
-	list<Vertex_And_Distance> neighbors;
+	list<Edge> edges;
 	Distance distance;
 	Vertex_Num vertex_num;
 } Vertex;

@@ -56,7 +56,7 @@ void run_all_tests()
 	vertices = &graph->vertices[0];
 	q = the_queue;
 
-	load_graph("example", ' ', graph, 0);
+	load_graph("example", &parse_simple_space_delimited_line, graph);
 
 	test_insert_pop_min();
 	test_insert_pop_min();

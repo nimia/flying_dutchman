@@ -11,13 +11,11 @@
 #include "utils.h"
 #include "dijkstra.h"
 
-bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance,
+typedef bool_t line_parse_func_t(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance);
+
+bool_t parse_delimiter_based_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance,
 		int skip_chars_in_line_start)
 {
-	if (!strcmp(line, "\r\n") || !strcmp(line, "\n") || line[0] == 'c') {
-		return FALSE;
-	}
-
 	char *start = line + skip_chars_in_line_start;
 	char *end = strchr(start, delimiter);
 	*end = '\0';
@@ -34,12 +32,53 @@ bool_t parse_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *sec
 	return TRUE;
 }
 
+bool_t parse_usa_challenge_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	if (!strcmp(line, "\r\n") || !strcmp(line, "\n") || line[0] == 'c' || line[0] == 'p') {
+		return FALSE;
+	}
+
+	return parse_delimiter_based_line(line, ' ', first, second, distance, 2);
+}
+
+bool_t parse_simple_space_delimited_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	if (!strcmp(line, "\r\n") || !strcmp(line, "\n")) {
+		return FALSE;
+	}
+
+	return parse_delimiter_based_line(line, ' ', first, second, distance, 0);
+}
+
+bool_t parse_boost_output_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	// last 2 lines are "Running...", those are the timing results
+	if (line[0] == 'R') {
+		return FALSE;
+	}
+
+	char *start = line + 1;
+	char *end = strchr(start, ',');
+	*end = '\0';
+	*first = atoi(start);
+
+	start = end + 1;
+	end = strchr(start, ')');
+	*end = '\0';
+	*second = atoi(start);
+
+	start = end + 2;
+	*distance = atoi(start);
+
+	return TRUE;
+}
+
 void reset_graph(Graph *graph)
 {
 	for (int i = 0; i < VERTEX__MAX_NUM_OF_VERTICES; i++) {
 		Vertex *vertex = &graph->vertices[i];
 		INIT_LIST_HEAD(&vertex->equi_distance_vertices);
-		vertex->neighbors.clear();
+		vertex->edges.clear();
 		vertex->distance = DISTANCE_INFINITY;
 		vertex->vertex_num = i;
 	}
@@ -47,7 +86,7 @@ void reset_graph(Graph *graph)
 	graph->max_vertex_num = -1;
 }
 
-void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_line_start)
+void load_graph(char *filename, line_parse_func_t *parse_line, Graph *graph)
 {
 	reset_graph(graph);
 
@@ -59,7 +98,7 @@ void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_
 		Vertex_Num first, second;
 		Distance distance;
 
-		if (parse_line(line, delimiter, &first, &second, &distance, skip_chars_in_line_start)) {
+		if ((*parse_line)(line, &first, &second, &distance)) {
 			if (MAX(first, second) >= VERTEX__MAX_NUM_OF_VERTICES) {
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
@@ -69,9 +108,9 @@ void load_graph(char *filename, char delimiter, Graph *graph, int skip_chars_in_
 
 			Vertex *first_vertex = &graph->vertices[first];
 			Vertex *second_vertex = &graph->vertices[second];
-			first_vertex->neighbors.push_front({second_vertex, distance});
+			first_vertex->edges.push_front({second_vertex, distance});
 
-			if (first_vertex->neighbors.size() > vertex_with_most_edges->neighbors.size()) {
+			if (first_vertex->edges.size() > vertex_with_most_edges->edges.size()) {
 				vertex_with_most_edges = first_vertex;
 			}
 
@@ -114,10 +153,13 @@ int main(int argc, char *argv[])
 	}
 
 	if (argc == 1) {
-		load_graph("example", ' ', &the_graph, 0);
+		load_graph("example", &parse_simple_space_delimited_line, &the_graph);
 		dijkstra(&the_graph, 1, the_queue);
+	} else if (argc == 3 && !strcmp(argv[1], "--boost")) {
+		load_graph("/localwork/boost_graph", &parse_boost_output_line, &the_graph);
+		dijkstra(&the_graph, 0, the_queue);
 	} else {
-		load_graph(argv[1], ' ', &the_graph, 2);
+		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
 		dijkstra(&the_graph, atoi(argv[2]), the_queue);
 	}
 	print_distances(&the_graph);

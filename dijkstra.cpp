@@ -8,8 +8,8 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 
 	Vertex *u = Queue__pop_min(q, graph);
 	while (u) {
-		for (list<Vertex_And_Distance>::iterator i = u->neighbors.begin(); i != u->neighbors.end(); ++i) {
-			Vertex *v = (*i).vertex;
+		for (list<Edge>::iterator i = u->edges.begin(); i != u->edges.end(); ++i) {
+			Vertex *v = (*i).dest;
 			uint64_t new_distance = u->distance + (*i).distance;
 
 			if (new_distance >= DISTANCE_MAX) {
