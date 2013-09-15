@@ -18,7 +18,7 @@ void reset_graph(Graph *graph)
 {
 	for (int i = 0; i < VERTEX__MAX_NUM_OF_VERTICES; i++) {
 		Vertex *vertex = &graph->vertices[i];
-		INIT_LIST_HEAD(&vertex->equi_distance_vertices);
+		INIT_LIST_HEAD(&vertex->queue_data.equi_distance_vertices);
 		vertex->edges.clear();
 		vertex->distance = DISTANCE__INFINITY;
 		vertex->vertex_num = i;
@@ -116,6 +116,6 @@ int main(int argc, char *argv[])
 	dijkstra(&the_graph, starting_vertex, the_queue);
 	end = clock();
 
-//	print_distances(&the_graph);
+	print_distances(&the_graph);
 	printf("Dijkstra took %ld seconds\n", (end - start) / CLOCKS_PER_SEC);
 }

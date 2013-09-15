@@ -8,6 +8,7 @@
 using namespace std;
 
 typedef struct Vertex Vertex;
+#include "queue__per_vertex_data.h"
 
 typedef struct Edge {
 	Vertex *dest;
@@ -17,8 +18,9 @@ typedef struct Edge {
 typedef struct Vertex {
 	Vertex_Num vertex_num;
 	list<Edge> edges;
-	struct list_head equi_distance_vertices;
 	Distance distance;
+
+	Queue__Per_Vertex_Data queue_data;
 } Vertex;
 
 typedef struct Graph {

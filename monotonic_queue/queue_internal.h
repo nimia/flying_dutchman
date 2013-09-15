@@ -3,9 +3,9 @@
 
 #include <stdlib.h>
 
-#include "list.h"
-#include "graph.h"
-#include "utils.h"
+#include "../list.h"
+#include "../graph.h"
+#include "../utils.h"
 
 /*
  * TLDR: This queue is intended for use only for the Dijkstra algorithm - it WILL provide erroneous results
@@ -62,9 +62,10 @@ static inline void Queue__insert(Queue *queue, Vertex *vertex, Distance distance
 	Vertex_Num equi_distance_vertices_head_vertex_num = *equi_distance_vertices_head_vertex_nump;
 
 	if (equi_distance_vertices_head_vertex_num != VERTEX__INVALID_VERTEX) {
-		list_add(&vertex->equi_distance_vertices, &graph->vertices[equi_distance_vertices_head_vertex_num].equi_distance_vertices);
+		list_add(&vertex->queue_data.equi_distance_vertices,
+				 &graph->vertices[equi_distance_vertices_head_vertex_num].queue_data.equi_distance_vertices);
 	} else {
-		INIT_LIST_HEAD(&vertex->equi_distance_vertices);
+		INIT_LIST_HEAD(&vertex->queue_data.equi_distance_vertices);
 		*equi_distance_vertices_head_vertex_nump = vertex->vertex_num;
 	}
 }
@@ -73,19 +74,23 @@ static inline void Queue__delete(Queue *queue, Vertex *vertex)
 {
 	Vertex_Num *equi_distance_vertices_head_vertex_nump = &queue->equi_distance_vertices_head_vertex_num[vertex->distance];
 
-	if (list_empty(&vertex->equi_distance_vertices)) {
+	if (list_empty(&vertex->queue_data.equi_distance_vertices)) {
 		*equi_distance_vertices_head_vertex_nump = VERTEX__INVALID_VERTEX;
 	} else {
-		Vertex *new_head = list_entry(vertex->equi_distance_vertices.next, Vertex, equi_distance_vertices);
+		Vertex *new_head = list_entry(vertex->queue_data.equi_distance_vertices.next,
+									  Vertex, queue_data.equi_distance_vertices);
+
 		*equi_distance_vertices_head_vertex_nump = new_head->vertex_num;
-		list_del_init(&vertex->equi_distance_vertices);
+		list_del_init(&vertex->queue_data.equi_distance_vertices);
 	}
 }
 
 static inline Vertex *Queue__pop_min(Queue *queue, Graph *graph)
 {
 	while (queue->min_distance_candidate <= queue->max_distance_ever_seen) {
-		Vertex_Num *equi_distance_vertices_head_vertex_nump = &queue->equi_distance_vertices_head_vertex_num[queue->min_distance_candidate];
+		Vertex_Num *equi_distance_vertices_head_vertex_nump =
+				&queue->equi_distance_vertices_head_vertex_num[queue->min_distance_candidate];
+
 		Vertex_Num equi_distance_vertices_head_vertex_num = *equi_distance_vertices_head_vertex_nump;
 
 		if (equi_distance_vertices_head_vertex_num != VERTEX__INVALID_VERTEX) {

@@ -11,6 +11,6 @@ static Vertex *Queue__pop_min(Queue *queue, Graph *graph);
 
 static void Queue__decrease_key(Queue *queue, Vertex *vertex, Distance new_distance, Graph *graph);
 
-#include "queue_internal.h"
+#include <queue_internal.h>
 
 #endif
