@@ -10,6 +10,7 @@
 #include "queue.h"
 #include "utils.h"
 #include "dijkstra.h"
+#include "bellman_ford.h"
 
 typedef bool_t line_parse_func_t(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance);
 
@@ -156,8 +157,11 @@ int main(int argc, char *argv[])
 		load_graph("example", &parse_simple_space_delimited_line, &the_graph);
 		dijkstra(&the_graph, 1, the_queue);
 	} else if (argc == 3 && !strcmp(argv[1], "--boost")) {
-		load_graph("/localwork/boost_graph", &parse_boost_output_line, &the_graph);
+		load_graph(argv[2], &parse_boost_output_line, &the_graph);
 		dijkstra(&the_graph, 0, the_queue);
+	} else if (argc == 3 && !strcmp(argv[1], "--bf")) {
+		load_graph("/localwork/boost_graph", &parse_boost_output_line, &the_graph);
+		bellman_ford(&the_graph, 0);
 	} else {
 		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
 		dijkstra(&the_graph, atoi(argv[2]), the_queue);

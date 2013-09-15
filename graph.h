@@ -15,10 +15,10 @@ typedef struct Edge {
 } Edge;
 
 typedef struct Vertex {
-	struct list_head equi_distance_vertices;
-	list<Edge> edges;
-	Distance distance;
 	Vertex_Num vertex_num;
+	list<Edge> edges;
+	struct list_head equi_distance_vertices;
+	Distance distance;
 } Vertex;
 
 typedef struct Graph {

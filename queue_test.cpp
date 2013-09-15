@@ -9,9 +9,14 @@ Queue *q;
 
 #define EQUAL(x, y, z, w) ((x) == (z) && (y) == (w)) || ((x) == (w) && (y) == (z))
 
+Vertex *q_pop_min()
+{
+	return Queue__pop_min(q, &the_graph);
+}
+
 int pop_min()
 {
-	return Queue__pop_min(q, &the_graph) - &the_graph.vertices[0];
+	return q_pop_min() - &the_graph.vertices[0];
 }
 
 void insert(Vertex_Num v, Distance d)
@@ -29,6 +34,8 @@ void test_insert_pop_min()
 	int v1 = pop_min();
 	int v2 = pop_min();
 	assert(EQUAL(v1, v2, 0, 1));
+
+	assert(q_pop_min() == NULL);
 }
 
 void test_inserting_two_vertices_with_zero_distance()
@@ -37,6 +44,8 @@ void test_inserting_two_vertices_with_zero_distance()
 
 	insert(0, 0);
 	assert(pop_min() == 0);
+
+	assert(q_pop_min() == NULL);
 }
 
 void test_inserting_vertex_with_3_dist_then_2_dist()
@@ -48,6 +57,8 @@ void test_inserting_vertex_with_3_dist_then_2_dist()
 
 	assert(pop_min() == 20);
 	assert(pop_min() == 17);
+
+	assert(q_pop_min() == NULL);
 }
 
 void run_all_tests()
