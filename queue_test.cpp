@@ -99,7 +99,7 @@ void setup()
 	vertices = &graph->vertices[0];
 	q = the_queue;
 
-	load_graph("example", &parse_simple_space_delimited_line, graph);
+	load_graph("example.graph", &parse_simple_space_delimited_line, graph);
 
 	setup_done = TRUE;
 }

@@ -1,3 +1,4 @@
+#include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,68 +12,7 @@
 #include "utils.h"
 #include "dijkstra.h"
 #include "bellman_ford.h"
-
-typedef bool_t line_parse_func_t(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance);
-
-bool_t parse_delimiter_based_line(char *line, char delimiter, Vertex_Num *first, Vertex_Num *second, Distance *distance,
-		int skip_chars_in_line_start)
-{
-	char *start = line + skip_chars_in_line_start;
-	char *end = strchr(start, delimiter);
-	*end = '\0';
-	*first = atoi(start);
-
-	start = end + 1;
-	end = strchr(start, delimiter);
-	*end = '\0';
-	*second = atoi(start);
-
-	start = end + 1;
-	*distance = atoi(start);
-
-	return TRUE;
-}
-
-bool_t parse_usa_challenge_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
-{
-	if (!strcmp(line, "\r\n") || !strcmp(line, "\n") || line[0] == 'c' || line[0] == 'p') {
-		return FALSE;
-	}
-
-	return parse_delimiter_based_line(line, ' ', first, second, distance, 2);
-}
-
-bool_t parse_simple_space_delimited_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
-{
-	if (!strcmp(line, "\r\n") || !strcmp(line, "\n")) {
-		return FALSE;
-	}
-
-	return parse_delimiter_based_line(line, ' ', first, second, distance, 0);
-}
-
-bool_t parse_boost_output_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
-{
-	// last 2 lines are "Running...", those are the timing results
-	if (line[0] == 'R') {
-		return FALSE;
-	}
-
-	char *start = line + 1;
-	char *end = strchr(start, ',');
-	*end = '\0';
-	*first = atoi(start);
-
-	start = end + 1;
-	end = strchr(start, ')');
-	*end = '\0';
-	*second = atoi(start);
-
-	start = end + 2;
-	*distance = atoi(start);
-
-	return TRUE;
-}
+#include "parse.h"
 
 void reset_graph(Graph *graph)
 {
@@ -146,6 +86,8 @@ Graph the_graph;
 
 int main(int argc, char *argv[])
 {
+	clock_t start, end;
+
 	the_queue = (Queue *)malloc(sizeof(Queue));
 
 	if (argc == 2 && !strcmp(argv[1], "test")) {
@@ -157,21 +99,23 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+	Vertex_Num starting_vertex;
 	if (argc == 2 && !strcmp(argv[1], "example")) {
-		load_graph("example", &parse_simple_space_delimited_line, &the_graph);
-		dijkstra(&the_graph, 1, the_queue);
-	} else if (argc == 3 && !strcmp(argv[1], "--boost")) {
-		load_graph(argv[2], &parse_boost_output_line, &the_graph);
-		dijkstra(&the_graph, 0, the_queue);
-	} else if (argc == 3 && !strcmp(argv[1], "--bf")) {
-		load_graph(argv[2], &parse_boost_output_line, &the_graph);
-		bellman_ford(&the_graph, 0);
-	} else if (argc == 2) {
+		load_graph("example.graph", &parse_simple_space_delimited_line, &the_graph);
+		starting_vertex = 1;
+	} else if (argc == 3) {
 		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
-		dijkstra(&the_graph, atoi(argv[2]), the_queue);
+		starting_vertex = atoi(argv[2]);
 	} else {
 		printf("Not sure what you want, check your arguments\n");
 		exit(1);
 	}
-	print_distances(&the_graph);
+
+	start = clock();
+	printf("Starting Dijkstra\n");
+	dijkstra(&the_graph, starting_vertex, the_queue);
+	end = clock();
+
+//	print_distances(&the_graph);
+	printf("Dijkstra took %ld seconds\n", (end - start) / CLOCKS_PER_SEC);
 }
