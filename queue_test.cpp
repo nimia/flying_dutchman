@@ -24,9 +24,15 @@ void insert(Vertex_Num v, Distance d)
 	Queue__insert(q, &vertices[v], d, graph);
 }
 
-void test_insert_pop_min()
+void init()
 {
 	Queue__init(q);
+
+}
+
+void test_insert_pop_min()
+{
+	init();
 
 	insert(0, 0);
 	insert(1, 0);
@@ -40,7 +46,7 @@ void test_insert_pop_min()
 
 void test_inserting_two_vertices_with_zero_distance()
 {
-	Queue__init(q);
+	init();
 
 	insert(0, 0);
 	assert(pop_min() == 0);
@@ -50,7 +56,7 @@ void test_inserting_two_vertices_with_zero_distance()
 
 void test_inserting_vertex_with_3_dist_then_2_dist()
 {
-	Queue__init(q);
+	init();
 
 	insert(17, 3);
 	insert(20, 2);
@@ -59,6 +65,13 @@ void test_inserting_vertex_with_3_dist_then_2_dist()
 	assert(pop_min() == 17);
 
 	assert(q_pop_min() == NULL);
+}
+
+void test_insert_max_distance()
+{
+	init();
+
+	insert(34, 3);
 }
 
 void run_all_tests()

@@ -28,7 +28,7 @@
  */
 
 typedef struct Queue {
-	Vertex_Num equi_distance_vertices_head_vertex_num[DISTANCE_NUM_OF_POSSIBLE_VALUES];
+	Vertex_Num equi_distance_vertices_head_vertex_num[DISTANCE__NUM_OF_POSSIBLE_VALUES];
 	int64_t min_distance_candidate;
 
 	// this does NOT decrement on decrease_key for code simplicity purposes; it's really "max ever seen"
@@ -38,7 +38,7 @@ typedef struct Queue {
 
 static inline void Queue__init(Queue *queue)
 {
-	for (int64_t i = 0; i < DISTANCE_QUEUE_QUICK_INIT_PREFIX_LENGTH; i++) {
+	for (int64_t i = 0; i < DISTANCE__QUEUE_QUICK_INIT_PREFIX_LENGTH; i++) {
 		queue->equi_distance_vertices_head_vertex_num[i] = VERTEX__INVALID_VERTEX;
 	}
 	queue->min_distance_candidate = 0;

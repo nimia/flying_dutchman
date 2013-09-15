@@ -12,7 +12,7 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 			Vertex *v = i->dest;
 			uint64_t new_distance = u->distance + i->distance;
 
-			if (new_distance >= DISTANCE_MAX) {
+			if (new_distance >= DISTANCE__MAX) {
 				printf("Encountered too great of a distance: %lu, for vertex %d\n", new_distance, v->vertex_num);
 				abort();
 			}

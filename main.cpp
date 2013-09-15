@@ -80,7 +80,7 @@ void reset_graph(Graph *graph)
 		Vertex *vertex = &graph->vertices[i];
 		INIT_LIST_HEAD(&vertex->equi_distance_vertices);
 		vertex->edges.clear();
-		vertex->distance = DISTANCE_INFINITY;
+		vertex->distance = DISTANCE__INFINITY;
 		vertex->vertex_num = i;
 	}
 
@@ -131,7 +131,7 @@ void print_distances(Graph *graph)
 	for (int i = 0; i <= graph->max_vertex_num; i++) {
 		Distance distance = graph->vertices[i].distance;
 
-		if (distance != DISTANCE_INFINITY) {
+		if (distance != DISTANCE__INFINITY) {
 			printf("%d %d\n", i, distance);
 			num_of_covered_vertices++;
 			max_distance = MAX(max_distance, distance);
