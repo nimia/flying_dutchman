@@ -157,18 +157,21 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	if (argc == 1) {
+	if (argc == 2 && !strcmp(argv[1], "example")) {
 		load_graph("example", &parse_simple_space_delimited_line, &the_graph);
 		dijkstra(&the_graph, 1, the_queue);
 	} else if (argc == 3 && !strcmp(argv[1], "--boost")) {
 		load_graph(argv[2], &parse_boost_output_line, &the_graph);
 		dijkstra(&the_graph, 0, the_queue);
 	} else if (argc == 3 && !strcmp(argv[1], "--bf")) {
-		load_graph("/localwork/boost_graph", &parse_boost_output_line, &the_graph);
+		load_graph(argv[2], &parse_boost_output_line, &the_graph);
 		bellman_ford(&the_graph, 0);
-	} else {
+	} else if (argc == 2) {
 		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
 		dijkstra(&the_graph, atoi(argv[2]), the_queue);
+	} else {
+		printf("Not sure what you want, check your arguments\n");
+		exit(1);
 	}
 	print_distances(&the_graph);
 }
