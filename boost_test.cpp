@@ -39,19 +39,10 @@ int main(int argc, char* argv[])
   // Build random graph
   typedef adjacency_list<vecS, vecS, directedS, no_property,
                          property<edge_weight_t, uint32_t> > Graph;
-  minstd_rand gen(seed);
-  double p = double(m)/(double(n)*double(n));
-  Graph g(erdos_renyi_iterator<minstd_rand, Graph>(gen, n, p),
-          erdos_renyi_iterator<minstd_rand, Graph>(),
-          n);
+  Graph g(n);
 
-  uniform_real<double> rand01(0.0, 1.0);
-  graph_traits<Graph>::edge_iterator ei, ei_end;
-  for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei) {
-	uint32_t weight = int(rand01(gen) * 10000);
-    put(edge_weight, g, *ei, weight);
-    std::cout << *ei << ' ' << weight << std::endl;
-  }
+  add_edge(vertex(0, g), vertex(1, g), 1, g);
+  add_edge(vertex(1, g), vertex(3, g), 5, g);
 
   std::vector<double> relaxed_heap_distances(n);
   std::vector<double> no_color_map_distances(n);
@@ -66,6 +57,9 @@ int main(int argc, char* argv[])
                           distance_map(&relaxed_heap_distances[0]));
   double relaxed_heap_time = t.elapsed();
   std::cout << relaxed_heap_time << " seconds.\n";
+  std::cout << "Vertex 1 distance is " << relaxed_heap_distances[1] << std::endl;
+  std::cout << "Vertex 2 distance is " << relaxed_heap_distances[2] << std::endl;
+  std::cout << "Vertex 3 distance is " << relaxed_heap_distances[3] << std::endl;
 
   // Run Michael's no-color-map version
   std::cout << "Running Dijkstra's (no color map) with d-ary heap (d=4)...";
