@@ -149,6 +149,10 @@ int main(int argc, char *argv[])
 	the_queue = (Queue *)malloc(sizeof(Queue));
 
 	if (argc == 2 && !strcmp(argv[1], "test")) {
+		run_build_tests();
+		exit(0);
+	}
+	if (argc == 2 && !strcmp(argv[1], "extended")) {
 		run_all_tests();
 		exit(0);
 	}

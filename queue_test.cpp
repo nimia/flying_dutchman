@@ -30,6 +30,11 @@ void init()
 
 }
 
+void assert_finished()
+{
+	assert(q_pop_min() == NULL);
+}
+
 void test_insert_pop_min()
 {
 	init();
@@ -41,7 +46,7 @@ void test_insert_pop_min()
 	int v2 = pop_min();
 	assert(EQUAL(v1, v2, 0, 1));
 
-	assert(q_pop_min() == NULL);
+	assert_finished();
 }
 
 void test_inserting_two_vertices_with_zero_distance()
@@ -51,7 +56,7 @@ void test_inserting_two_vertices_with_zero_distance()
 	insert(0, 0);
 	assert(pop_min() == 0);
 
-	assert(q_pop_min() == NULL);
+	assert_finished();
 }
 
 void test_inserting_vertex_with_3_dist_then_2_dist()
@@ -64,25 +69,59 @@ void test_inserting_vertex_with_3_dist_then_2_dist()
 	assert(pop_min() == 20);
 	assert(pop_min() == 17);
 
-	assert(q_pop_min() == NULL);
+	assert_finished();
 }
 
 void test_insert_max_distance()
 {
 	init();
 
-	insert(34, 3);
+	// This is done for faster TESTING ONLY, obviously not part of the API;
+	// Do not use this technique yourself unless you know what you're doing
+	q->min_distance_candidate = DISTANCE__MAX - 10;
+	q->max_distance_ever_seen = DISTANCE__MAX - 20;
+
+	insert(34, DISTANCE__MAX);
+	assert(pop_min() == 34);
+	assert(graph->vertices[34].distance == DISTANCE__MAX);
+
+	assert_finished();
 }
 
-void run_all_tests()
+bool_t setup_done = FALSE;
+void setup()
 {
+	if (setup_done) {
+		return;
+	}
+
 	graph = &the_graph;
 	vertices = &graph->vertices[0];
 	q = the_queue;
 
 	load_graph("example", &parse_simple_space_delimited_line, graph);
 
+	setup_done = TRUE;
+}
+
+void run_build_tests()
+{
+	setup();
+
 	test_insert_pop_min();
 	test_insert_pop_min();
 	test_inserting_vertex_with_3_dist_then_2_dist();
+}
+
+void run_extended_tests()
+{
+	setup();
+
+	test_insert_max_distance();
+}
+
+void run_all_tests()
+{
+	run_build_tests();
+	run_extended_tests();
 }
