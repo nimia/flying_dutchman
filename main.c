@@ -80,12 +80,21 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+
 	Vertex_Num starting_vertex;
-	if (argc == 2 && !strcmp(argv[1], "example")) {
+	void (*algorithm)(Graph *, Vertex_Num, Queue*);
+
+	if (!strcmp(argv[1], "bf")) {
+		load_graph(argv[2], &parse_usa_challenge_line, &the_graph);
+		algorithm = &bellman_ford;
+		starting_vertex = atoi(argv[3]);
+	} else if (argc == 2 && !strcmp(argv[1], "example")) {
 		load_graph("example.graph", &parse_simple_space_delimited_line, &the_graph);
+		algorithm = &dijkstra;
 		starting_vertex = 1;
 	} else if (argc == 3) {
 		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
+		algorithm = &dijkstra;
 		starting_vertex = atoi(argv[2]);
 	} else {
 		printf("Not sure what you want, check your arguments\n");
@@ -93,10 +102,10 @@ int main(int argc, char *argv[])
 	}
 
 	start = clock();
-	printf("Starting Dijkstra\n");
-	dijkstra(&the_graph, starting_vertex, the_queue);
+	printf("Starting algorithm\n");
+	(*algorithm)(&the_graph, starting_vertex, the_queue);
 	end = clock();
 
 	print_distances(&the_graph);
-	printf("Dijkstra took %ld seconds\n", (end - start) / CLOCKS_PER_SEC);
+	printf("Algorithm took %ld seconds\n", (end - start) / CLOCKS_PER_SEC);
 }

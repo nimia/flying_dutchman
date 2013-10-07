@@ -11,4 +11,4 @@ boost: *.c *.cpp *.h
 	g++ -Ofast boost_test.cpp parse.c -o boost
 	
 clean:
-	rm boost flying_dutchman
+	rm boost flying_dutchman bellman_ford

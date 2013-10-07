@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "list.h"
 
-void bellman_ford(Graph *graph, Vertex_Num source)
+void bellman_ford(Graph *graph, Vertex_Num source, __attribute__((unused)) Queue *dummy)
 {
 	graph->vertices[source].distance = 0;
 
