@@ -1,12 +1,13 @@
 ALL: test
  
-flying_dutchman: *.cpp *.h
-	g++ -I./monotonic_queue -std=c++11 -Ofast -mcmodel=large -Wall -Wextra -pedantic -Wno-write-strings -Wformat parse.c dijkstra.cpp main.cpp queue_test.cpp bellman_ford.cpp -o flying_dutchman
+flying_dutchman: *.c *.h
+	gcc -I./monotonic_queue -std=c11 -Ofast -mcmodel=large -Wall -Wextra -pedantic -Wno-write-strings -Wformat parse.c \
+	 dijkstra.c main.c queue_test.c bellman_ford.c -o flying_dutchman
 
 test: flying_dutchman
 	./flying_dutchman test
 	
-boost: *.cpp *.h
+boost: *.c *.cpp *.h
 	g++ -Ofast boost_test.cpp parse.c -o boost
 	
 clean:

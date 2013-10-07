@@ -14,33 +14,19 @@
 #include "bellman_ford.h"
 #include "parse.h"
 
-void reset_graph(Graph *graph)
-{
-	for (int i = 0; i < VERTEX__MAX_NUM_OF_VERTICES; i++) {
-		Vertex *vertex = &graph->vertices[i];
-		INIT_LIST_HEAD(&vertex->queue_data.equi_distance_vertices);
-		vertex->edges.clear();
-		vertex->distance = DISTANCE__INFINITY;
-		vertex->vertex_num = i;
-	}
-
-	graph->max_vertex_num = -1;
-}
-
 void load_graph(char *filename, line_parse_func_t *parse_line, Graph *graph)
 {
-	reset_graph(graph);
+	Graph__reset(graph);
 
 	FILE *f = fopen(filename, "r");
 	char line[128];
 
-	Vertex *vertex_with_most_edges = &graph->vertices[0];
 	while (fgets(line, sizeof line, f) != NULL ) {
 		Vertex_Num first, second;
 		Distance distance;
 
 		if ((*parse_line)(line, &first, &second, &distance)) {
-			if (MAX(first, second) >= VERTEX__MAX_NUM_OF_VERTICES) {
+			if (MAX(first, second) >= GRAPH__MAX_NUM_OF_VERTICES) {
 				printf("Encountered vertex with too big an index - did you remember to set NUM_OF_VERTICES?\n");
 				abort();
 			}
@@ -49,17 +35,12 @@ void load_graph(char *filename, line_parse_func_t *parse_line, Graph *graph)
 
 			Vertex *first_vertex = &graph->vertices[first];
 			Vertex *second_vertex = &graph->vertices[second];
-			first_vertex->edges.push_front({second_vertex, distance});
-
-			if (first_vertex->edges.size() > vertex_with_most_edges->edges.size()) {
-				vertex_with_most_edges = first_vertex;
-			}
+			Graph__add_edge(graph, first_vertex, second_vertex, distance);
 
 			DEBUG("%d => %d, distance %d\n", first, second, distance);
 		}
 	}
 
-	printf("Vertex with most edges is %d\n", vertex_with_most_edges->vertex_num);
 	fclose(f);
 }
 

@@ -1,5 +1,6 @@
 #include "bellman_ford.h"
 #include "utils.h"
+#include "list.h"
 
 void bellman_ford(Graph *graph, Vertex_Num source)
 {
@@ -11,7 +12,8 @@ void bellman_ford(Graph *graph, Vertex_Num source)
 		for (int i = 0; i <= graph->max_vertex_num; i++) {
 			Vertex *u = &graph->vertices[i];
 
-			for (list<Edge>::iterator e = u->edges.begin(); e != u->edges.end(); ++e) {
+			Edge *e;
+			list_for_each_entry(e, &u->edges_list, list) {
 				Vertex *v = e->dest;
 
 				if (u->distance + e->distance < v->distance) {

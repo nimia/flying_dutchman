@@ -8,9 +8,10 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 
 	Vertex *u = Queue__pop_min(q, graph);
 	while (u) {
-		for (list<Edge>::iterator i = u->edges.begin(); i != u->edges.end(); ++i) {
-			Vertex *v = i->dest;
-			uint64_t new_distance = u->distance + i->distance;
+		Edge *e;
+		list_for_each_entry(e, &u->edges_list, list) {
+			Vertex *v = e->dest;
+			uint64_t new_distance = u->distance + e->distance;
 
 			if (new_distance >= DISTANCE__MAX) {
 				printf("Encountered too great of a distance: %lu, for vertex %d\n", new_distance, v->vertex_num);
