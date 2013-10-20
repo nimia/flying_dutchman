@@ -9,7 +9,7 @@ void dijkstra(Graph *graph, Vertex_Num source, Queue *q)
 	Vertex *u = Queue__pop_min(q, graph);
 	while (u) {
 		Edge *e;
-		list_for_each_entry(e, &u->edges_list, list) {
+		Vertex__FOR_EACH_EDGE(u, e) {
 			Vertex *v = e->dest;
 			uint64_t new_distance = u->distance + e->distance;
 

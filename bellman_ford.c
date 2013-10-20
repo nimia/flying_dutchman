@@ -13,7 +13,7 @@ void bellman_ford(Graph *graph, Vertex_Num source, __attribute__((unused)) Queue
 			Vertex *u = &graph->vertices[i];
 
 			Edge *e;
-			list_for_each_entry(e, &u->edges_list, list) {
+			Vertex__FOR_EACH_EDGE(u, e) {
 				Vertex *v = e->dest;
 
 				if (u->distance + e->distance < v->distance) {
