@@ -65,21 +65,31 @@ void print_distances(Graph *graph)
 Queue *the_queue;
 Graph the_graph;
 
+void assert_example_distances_are_correct(Graph *graph)
+{
+#define ASSERT_DISTANCE(_vertex_num, _distance) do { assert(graph->vertices[(_vertex_num)].distance == (_distance)); } while (0)
+	ASSERT_DISTANCE(1, 0);
+	ASSERT_DISTANCE(2, 7);
+	ASSERT_DISTANCE(3, 7);
+	ASSERT_DISTANCE(4, 17);
+	ASSERT_DISTANCE(5, 16);
+	ASSERT_DISTANCE(6, 676498121 + 16);
+#undef ASSERT_DISTANCE
+	printf("Example distances are correct\n");
+}
+
 int main(int argc, char *argv[])
 {
+	printf("sizeof(Queue) = %lu\n", sizeof(Queue));
+
 	clock_t start, end;
 
 	the_queue = (Queue *)malloc(sizeof(Queue));
 
-	if (argc == 2 && !strcmp(argv[1], "test")) {
-		run_build_tests();
-		exit(0);
-	}
 	if (argc == 2 && !strcmp(argv[1], "extended")) {
 		run_all_tests();
 		exit(0);
 	}
-
 
 	Vertex_Num starting_vertex;
 	void (*algorithm)(Graph *, Vertex_Num, Queue*);
@@ -90,8 +100,9 @@ int main(int argc, char *argv[])
 		starting_vertex = atoi(argv[3]);
 	} else if (argc == 2 && !strcmp(argv[1], "example")) {
 		load_graph("example.graph", &parse_simple_space_delimited_line, &the_graph);
-		algorithm = &dijkstra;
-		starting_vertex = 1;
+		dijkstra(&the_graph, 1, the_queue);
+		assert_example_distances_are_correct(&the_graph);
+		return 0;
 	} else if (argc == 3) {
 		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
 		algorithm = &dijkstra;

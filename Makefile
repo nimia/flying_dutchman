@@ -5,7 +5,7 @@ flying_dutchman: *.c *.h
 	 dijkstra.c main.c queue_test.c bellman_ford.c -o flying_dutchman
 
 test: flying_dutchman
-	./flying_dutchman test
+	./flying_dutchman example
 	
 boost: *.c *.cpp *.h
 	g++ -Ofast boost_test.cpp parse.c -o boost

@@ -74,18 +74,18 @@ void test_inserting_vertex_with_3_dist_then_2_dist()
 
 void test_insert_max_distance()
 {
-	init();
-
-	// This is done for faster TESTING ONLY, obviously not part of the API;
-	// Do not use this technique yourself unless you know what you're doing
-	q->min_distance_candidate = DISTANCE__MAX - 10;
-	q->max_distance_ever_seen = DISTANCE__MAX - 20;
-
-	insert(34, DISTANCE__MAX);
-	assert(pop_min() == 34);
-	assert(graph->vertices[34].distance == DISTANCE__MAX);
-
-	assert_finished();
+//	init();
+//
+//	// This is done for faster TESTING ONLY, obviously not part of the API;
+//	// Do not use this technique yourself unless you know what you're doing
+//	q->min_distance_candidate = DISTANCE__MAX - 10;
+//	q->max_distance_ever_seen = DISTANCE__MAX - 20;
+//
+//	insert(34, DISTANCE__MAX);
+//	assert(pop_min() == 34);
+//	assert(graph->vertices[34].distance == DISTANCE__MAX);
+//
+//	assert_finished();
 }
 
 bool_t setup_done = FALSE;

@@ -11,6 +11,6 @@ typedef uint32_t Distance;
 #define DISTANCE__NUM_OF_POSSIBLE_VALUES (DISTANCE__INFINITY + 1)
 
 typedef int32_t Vertex_Num;
-#define VERTEX__INVALID_VERTEX (INT32_MAX)
+#define Vertex__INVALID (INT32_MAX)
 
 #endif
