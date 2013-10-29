@@ -15,25 +15,25 @@ typedef enum bool_t {
 //#define DEBUG_MODE 1
 #ifdef DEBUG_MODE
 
-#define DEBUG(fmt, ...) \
-            do { printf(fmt, __VA_ARGS__); } while (0)
+	#define DEBUG(fmt, ...) \
+				do { printf(fmt, __VA_ARGS__); } while (0)
 
-#define DEBUG_ASSERT(x) \
-	do { assert(x); } while (0)
+	#define DEBUG_ASSERT(x) \
+		do { assert(x); } while (0)
 
-#define DEBUG_DO(x) \
-	do { x; } while (0)
+	#define DEBUG_DO(x) \
+		do { x; } while (0)
 
 #else
 
-#define DEBUG(fmt, ...) \
-            do {} while (0)
+	#define DEBUG(fmt, ...) \
+				do {} while (0)
 
-#define DEBUG_ASSERT(x) \
-            do {} while (0)
+	#define DEBUG_ASSERT(x) \
+				do {} while (0)
 
-#define DEBUG_DO(x) \
-	do {} while (0)
+	#define DEBUG_DO(x) \
+		do {} while (0)
 
 #endif
 

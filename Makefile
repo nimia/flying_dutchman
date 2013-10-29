@@ -1,7 +1,9 @@
-ALL: test
+ALL: flying_dutchman test
+
+.PHONY: flying_dutchman
  
-flying_dutchman: *.c *.h
-	gcc -I./monotonic_queue -std=c11 -Ofast -mcmodel=large -Wall -Wextra -pedantic -Wno-write-strings -Wformat parse.c \
+flying_dutchman:
+	gcc -I./monotonic_queue -std=c11 -g -mcmodel=large -Wall -Wextra -pedantic -Wno-write-strings -Wformat parse.c \
 	 dijkstra.c main.c queue_test.c bellman_ford.c -o flying_dutchman
 
 test: flying_dutchman

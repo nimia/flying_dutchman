@@ -37,7 +37,7 @@ void load_graph(char *filename, line_parse_func_t *parse_line, Graph *graph)
 			Vertex *second_vertex = &graph->vertices[second];
 			Graph__add_edge(graph, first_vertex, second_vertex, distance);
 
-			DEBUG("%d => %d, distance %d\n", first, second, distance);
+//			DEBUG("%d => %d, distance %d\n", first, second, distance);
 		}
 	}
 
@@ -81,6 +81,7 @@ void assert_example_distances_are_correct(Graph *graph)
 int main(int argc, char *argv[])
 {
 	printf("sizeof(Queue) = %lu\n", sizeof(Queue));
+	printf("sizeof(Graph) = %lu\n", sizeof(Graph));
 
 	clock_t start, end;
 
