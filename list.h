@@ -248,6 +248,6 @@ static inline void list_splice_init(struct list_head *list,
 	for (pos = list_entry((head)->next, __typeof__(*pos), member),	\
 		n = list_entry(pos->member.next, __typeof__(*pos), member);	\
 	     &pos->member != (head); 					\
-	     pos = n, n = list_entry(n->member.next, __typeof__(*n), member), __builtin_prefetch(n->member.next))
+	     pos = n, n = list_entry(n->member.next, __typeof__(*n), member), __builtin_prefetch(n->member.next, 1))
 
 #endif
