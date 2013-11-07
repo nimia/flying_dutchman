@@ -209,7 +209,7 @@ static inline void Queue__spill_chunk(Queue *queue, Chunk chunk, Graph *graph)
 	queue->current_chunk = chunk;
 	queue->min_distance_candidate = 0;
 
-	Queue__assert_all_cells_are_empty(queue);
+	//Queue__assert_all_cells_are_empty(queue);
 
 	if (chunk == 12) {
 		printf("spilling chunk 12, all cells are empty\n");
@@ -218,7 +218,7 @@ static inline void Queue__spill_chunk(Queue *queue, Chunk chunk, Graph *graph)
 
 	Vertex *representative = &graph->vertices[queue->chunk_heads[chunk]];
 	Vertex *v, *temp;
-	list_for_each_entry_safe(v, temp, &representative->queue_data.equi_distance_vertices, queue_data.equi_distance_vertices) {
+	list_for_each_entry_safe_with_prefetch(v, temp, &representative->queue_data.equi_distance_vertices, queue_data.equi_distance_vertices) {
 		Cell_Inside_Chunk cell = Queue__get_cell_inside_chunk(v->distance);
 		Queue__insert_to_something(&queue->equi_distance_vertices_head_vertex_num[cell], v, graph);
 	}
