@@ -107,5 +107,5 @@ int main(int argc, char *argv[])
 	end = clock();
 
 	print_distances(&the_graph);
-	printf("Algorithm took %ld seconds\n", (end - start) / CLOCKS_PER_SEC);
+	printf("Algorithm took %f seconds\n", (float)(end - start) / CLOCKS_PER_SEC);
 }
