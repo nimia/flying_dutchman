@@ -19,6 +19,9 @@
 #include <vector>
 #include <iostream>
 
+#include <iostream>
+#include <fstream>
+
 #include <iterator>
 #include <utility>
 #include <boost/random/uniform_int.hpp>
@@ -29,6 +32,7 @@
 #include <boost/detail/lightweight_test.hpp>
 
 #include "parse.h"
+#include "utils.h"
 
 using namespace boost;
 
@@ -60,41 +64,59 @@ void load_graph(char *filename, line_parse_func_t *parse_line, Graph &g)
 	fclose(f);
 }
 
+std::ofstream output_file;
+
 void print_distances(std::vector<int32_t> &distances)
 {
 	for (int i = 1; i <= BOOST__NUM_OF_VERTICES; i++) {
-		std::cout << i << " " << distances[i] << std::endl;
+		output_file << i << " " << distances[i] << std::endl;
 	}
+}
+
+double min(double a, double b)
+{
+	if (a > b) {
+		return b;
+	}
+	return a;
 }
 
 int main(int argc, char* argv[])
 {
   Graph g(BOOST__NUM_OF_VERTICES);
 
-  load_graph(argv[1], &parse_usa_challenge_line, g);
+  char *graph_path = argv[1];
+  load_graph(graph_path, &parse_usa_challenge_line, g);
 
+  int starting_vertex = atoi(argv[2]);
   std::vector<int32_t> relaxed_heap_distances(BOOST__NUM_OF_VERTICES);
   std::vector<int32_t> no_color_map_distances(BOOST__NUM_OF_VERTICES);
 
-  // Run relaxed heap version
-  std::cout << "Running Dijkstra's with d-ary heap (d=4)...";
-  std::cout.flush();
+  std::string graph_basename = my_basename(graph_path);
+  printf("Basename is %s\n", graph_basename.c_str());
+  std::string output_file_path = "/localwork/boost_results_on_";
+  output_file_path += graph_basename;
+  output_file_path += "_";
+  output_file_path += lexical_cast<std::string>(starting_vertex);
+  printf("Output file is %s\n", output_file_path.c_str());
+  output_file.open(output_file_path.c_str());
+  output_file << "Starting Boost Dijkstra on graph " << graph_basename << ", from starting vertex " << starting_vertex << std::endl;
+
   timer t;
-  t.restart();
   dijkstra_relaxed_heap = true;
+  t.restart();
   dijkstra_shortest_paths(g, vertex(atoi(argv[2]), g),
                           distance_map(&relaxed_heap_distances[0]));
-  double relaxed_heap_time = t.elapsed();
-  std::cout << relaxed_heap_time << " seconds.\n";
+  double dijkstra_time = t.elapsed();
 
-  print_distances(relaxed_heap_distances);
-
-
-  // Run Michael's no-color-map version
-  std::cout << "Running Dijkstra's (no color map) with d-ary heap (d=4)...";
-  std::cout.flush();
+  dijkstra_relaxed_heap = false;
   t.restart();
+  dijkstra_shortest_paths(g, vertex(atoi(argv[2]), g),
+                          distance_map(&relaxed_heap_distances[0]));
+  dijkstra_time = min(dijkstra_time, t.elapsed());
+
   dijkstra_relaxed_heap = true;
+  t.restart();
   dijkstra_shortest_paths_no_color_map
     (g, vertex(atoi(argv[2]), g),
      boost::dummy_property_map(),
@@ -109,8 +131,29 @@ int main(int argc, char* argv[])
      0,
      make_dijkstra_visitor(null_visitor())
      );
-  double no_color_map_time = t.elapsed();
-  std::cout << no_color_map_time << " seconds.\n";
+  dijkstra_time = min(dijkstra_time, t.elapsed());
 
-  return boost::report_errors();
+  dijkstra_relaxed_heap = false;
+  t.restart();
+  dijkstra_shortest_paths_no_color_map
+    (g, vertex(atoi(argv[2]), g),
+     boost::dummy_property_map(),
+     boost::make_iterator_property_map(&no_color_map_distances[0],
+                                       get(boost::vertex_index, g),
+                                       0),
+     get(boost::edge_weight, g),
+     get(boost::vertex_index, g),
+     std::less<int32_t>(),
+     boost::closed_plus<int32_t>(),
+     (std::numeric_limits<int32_t>::max)(),
+     0,
+     make_dijkstra_visitor(null_visitor())
+     );
+  dijkstra_time = min(dijkstra_time, t.elapsed());
+
+  output_file << "Algorithm took " << dijkstra_time << " seconds." << std::endl;
+
+  print_distances(relaxed_heap_distances);
+
+  return 0;
 }

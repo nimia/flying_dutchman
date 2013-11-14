@@ -44,6 +44,8 @@ void load_graph(char *filename, line_parse_func_t *parse_line, Graph *graph)
 	fclose(f);
 }
 
+FILE *output_file;
+
 void print_distances(Graph *graph)
 {
 	int num_of_covered_vertices = 0;
@@ -53,13 +55,26 @@ void print_distances(Graph *graph)
 		Distance distance = graph->vertices[i].distance;
 
 		if (distance != DISTANCE__INFINITY) {
-			printf("%d %d\n", i, distance);
+			fprintf(output_file, "%d %d\n", i, distance);
 			num_of_covered_vertices++;
 			max_distance = MAX(max_distance, distance);
 		}
 	}
 
-	printf("Covered %d vertices, max distance is %d\n", num_of_covered_vertices, max_distance);
+	fprintf(output_file, "Covered %d vertices, max distance is %d\n", num_of_covered_vertices, max_distance);
+}
+
+typedef void (*Algorithm)(Graph *, Vertex_Num, Queue*);
+
+char *algorithm_name(Algorithm algorithm)
+{
+	if (algorithm == &bellman_ford) {
+		return "Bellman-Ford";
+	}
+	if (algorithm == &dijkstra) {
+		return "Dijkstra";
+	}
+	abort();
 }
 
 Queue *the_queue;
@@ -67,8 +82,6 @@ Graph the_graph;
 
 int main(int argc, char *argv[])
 {
-	clock_t start, end;
-
 	the_queue = (Queue *)malloc(sizeof(Queue));
 
 	if (argc == 2 && !strcmp(argv[1], "test")) {
@@ -80,32 +93,42 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+	Vertex_Num starting_vertex = atoi(argv[3]);
+	Algorithm algorithm;
 
-	Vertex_Num starting_vertex;
-	void (*algorithm)(Graph *, Vertex_Num, Queue*);
+	char output_file_path[256]; //yuck
 
 	if (!strcmp(argv[1], "bf")) {
-		load_graph(argv[2], &parse_usa_challenge_line, &the_graph);
 		algorithm = &bellman_ford;
-		starting_vertex = atoi(argv[3]);
-	} else if (argc == 2 && !strcmp(argv[1], "example")) {
-		load_graph("example.graph", &parse_simple_space_delimited_line, &the_graph);
+		sprintf(output_file_path, "/localwork/bf_results_on_");
+	} else if (!strcmp(argv[1], "dijkstra")) {
 		algorithm = &dijkstra;
-		starting_vertex = 1;
-	} else if (argc == 3) {
-		load_graph(argv[1], &parse_usa_challenge_line, &the_graph);
-		algorithm = &dijkstra;
-		starting_vertex = atoi(argv[2]);
+		sprintf(output_file_path, "/localwork/my_results_on_");
 	} else {
 		printf("Not sure what you want, check your arguments\n");
 		exit(1);
 	}
+	strcat(output_file_path, my_basename(argv[2]));
+	strcat(output_file_path, "_");
+	strcat(output_file_path, argv[3]);
+	load_graph(argv[2], &parse_usa_challenge_line, &the_graph);
 
-	start = clock();
-	printf("Starting algorithm\n");
+	if (strlen(output_file_path)) {
+		output_file = fopen(output_file_path, "w");
+	} else {
+		output_file = stdin;
+	}
+
+	fprintf(output_file, "Starting algorithm %s on graph %s, from starting vertex %d\n",
+			algorithm_name(algorithm), argv[2], starting_vertex);
+
+	clock_t start = clock();
 	(*algorithm)(&the_graph, starting_vertex, the_queue);
-	end = clock();
+	clock_t end = clock();
 
+	fprintf(output_file, "Algorithm took %f seconds\n", (float)(end - start) / CLOCKS_PER_SEC);
 	print_distances(&the_graph);
-	printf("Algorithm took %f seconds\n", (float)(end - start) / CLOCKS_PER_SEC);
+
+	fflush(output_file);
+	fclose(output_file);
 }

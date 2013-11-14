@@ -2,6 +2,8 @@
 #define UTILS_H_
 
 #include <stdio.h>
+#include <string.h>
+#include <libgen.h> // basename
 
 typedef enum bool_t {
 	FALSE = 0,
@@ -19,5 +21,20 @@ typedef enum bool_t {
 #define DEBUG(fmt, ...) \
             do {} while (0)
 #endif
+
+static inline char *strclone(char *s)
+{
+	char *result = (char *)malloc((strlen(s) + 1) * sizeof(char));
+	strcpy(result, s);
+	return result;
+}
+
+static inline char *my_basename(char *filename)
+{
+	char *clone = strclone(filename);
+	char *result = basename(clone);
+	free(clone);
+	return strclone(result);
+}
 
 #endif
