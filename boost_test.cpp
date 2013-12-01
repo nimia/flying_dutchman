@@ -9,6 +9,9 @@
 // humble changes by Nimrod Aviram
 #define BOOST_GRAPH_DIJKSTRA_TESTING
 
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/dijkstra_shortest_paths_no_color_map.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -68,8 +71,10 @@ std::ofstream output_file;
 
 void print_distances(std::vector<int32_t> &distances)
 {
-	for (int i = 1; i <= BOOST__NUM_OF_VERTICES; i++) {
-		output_file << i << " " << distances[i] << std::endl;
+	for (int i = 0; i <= BOOST__NUM_OF_VERTICES; i++) {
+		if (distances[i] != INT32_MAX) {
+			output_file << i << " " << distances[i] << std::endl;
+		}
 	}
 }
 

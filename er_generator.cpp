@@ -39,8 +39,10 @@ int main(int argc, char* argv[])
 	}
 
   unsigned n = lexical_cast<int>(argv[1]);
-  unsigned m = lexical_cast<int>(argv[2]);
+  float density = lexical_cast<float>(argv[2]);
+  unsigned m = int(density * n);
   int seed = lexical_cast<int>(argv[3]);
+  double p = double(m)/(double(n)*double(n));
 
   std::string output_file_path = "/localwork/er_";
   output_file_path += lexical_cast<std::string>(n);
@@ -59,7 +61,6 @@ int main(int argc, char* argv[])
   typedef adjacency_list<vecS, vecS, directedS, no_property,
                          property<edge_weight_t, uint32_t> > Graph;
   minstd_rand gen(seed);
-  double p = double(m)/(double(n)*double(n));
   Graph g(erdos_renyi_iterator<minstd_rand, Graph>(gen, n, p),
           erdos_renyi_iterator<minstd_rand, Graph>(),
           n);

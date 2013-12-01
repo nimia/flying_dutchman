@@ -9,6 +9,9 @@ test: flying_dutchman
 	
 boost: *.c *.cpp *.h
 	g++ -Ofast boost_test.cpp parse.c -o boost
+
+er_generator: *.c *.cpp *.h
+	g++ -Ofast er_generator.cpp -o er_generator
 	
 clean:
 	rm boost flying_dutchman bellman_ford
