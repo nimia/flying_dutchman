@@ -97,13 +97,20 @@ int main(int argc, char *argv[])
 	Algorithm algorithm;
 
 	char output_file_path[256]; //yuck
+	line_parse_func_t *parse_line;
 
 	if (!strcmp(argv[1], "bf")) {
 		algorithm = &bellman_ford;
 		sprintf(output_file_path, "/localwork/bf_results_on_");
+		parse_line = &parse_usa_challenge_line;
 	} else if (!strcmp(argv[1], "dijkstra")) {
 		algorithm = &dijkstra;
 		sprintf(output_file_path, "/localwork/my_results_on_");
+		parse_line = &parse_usa_challenge_line;
+	} else if (!strcmp(argv[1], "er")) {
+		algorithm = &dijkstra;
+		sprintf(output_file_path, "/localwork/my_results_on_");
+		parse_line = &parse_boost_line;
 	} else {
 		printf("Not sure what you want, check your arguments\n");
 		exit(1);
@@ -111,7 +118,7 @@ int main(int argc, char *argv[])
 	strcat(output_file_path, my_basename(argv[2]));
 	strcat(output_file_path, "_");
 	strcat(output_file_path, argv[3]);
-	load_graph(argv[2], &parse_usa_challenge_line, &the_graph);
+	load_graph(argv[2], parse_line, &the_graph);
 
 	if (strlen(output_file_path)) {
 		output_file = fopen(output_file_path, "w");

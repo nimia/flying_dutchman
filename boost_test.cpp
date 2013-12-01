@@ -85,10 +85,18 @@ int main(int argc, char* argv[])
 {
   Graph g(BOOST__NUM_OF_VERTICES);
 
-  char *graph_path = argv[1];
-  load_graph(graph_path, &parse_usa_challenge_line, g);
+  char *graph_path = argv[2];
 
-  int starting_vertex = atoi(argv[2]);
+  if (!strcmp(argv[1], "usa")) {
+	  load_graph(graph_path, &parse_usa_challenge_line, g);
+  } else if (!strcmp(argv[1], "er")) {
+	  load_graph(graph_path, &parse_boost_line, g);
+  } else {
+	  printf("Not sure what you want, check your arguments\n");
+	  exit(1);
+  }
+
+  int starting_vertex = atoi(argv[3]);
   std::vector<int32_t> relaxed_heap_distances(BOOST__NUM_OF_VERTICES);
   std::vector<int32_t> no_color_map_distances(BOOST__NUM_OF_VERTICES);
 
@@ -105,20 +113,20 @@ int main(int argc, char* argv[])
   timer t;
   dijkstra_relaxed_heap = true;
   t.restart();
-  dijkstra_shortest_paths(g, vertex(atoi(argv[2]), g),
+  dijkstra_shortest_paths(g, vertex(starting_vertex, g),
                           distance_map(&relaxed_heap_distances[0]));
   double dijkstra_time = t.elapsed();
 
   dijkstra_relaxed_heap = false;
   t.restart();
-  dijkstra_shortest_paths(g, vertex(atoi(argv[2]), g),
+  dijkstra_shortest_paths(g, vertex(starting_vertex, g),
                           distance_map(&relaxed_heap_distances[0]));
   dijkstra_time = min(dijkstra_time, t.elapsed());
 
   dijkstra_relaxed_heap = true;
   t.restart();
   dijkstra_shortest_paths_no_color_map
-    (g, vertex(atoi(argv[2]), g),
+    (g, vertex(starting_vertex, g),
      boost::dummy_property_map(),
      boost::make_iterator_property_map(&no_color_map_distances[0],
                                        get(boost::vertex_index, g),
@@ -136,7 +144,7 @@ int main(int argc, char* argv[])
   dijkstra_relaxed_heap = false;
   t.restart();
   dijkstra_shortest_paths_no_color_map
-    (g, vertex(atoi(argv[2]), g),
+    (g, vertex(starting_vertex, g),
      boost::dummy_property_map(),
      boost::make_iterator_property_map(&no_color_map_distances[0],
                                        get(boost::vertex_index, g),

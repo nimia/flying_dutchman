@@ -39,3 +39,22 @@ bool_t parse_simple_space_delimited_line(char *line, Vertex_Num *first, Vertex_N
 
 	return parse_delimiter_based_line(line, ' ', first, second, distance, 0);
 }
+
+bool_t parse_boost_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	if (line[0] != '(') {
+		return FALSE;
+	}
+
+	char *comma = strchr(line, ',');
+	*comma = '\0';
+	*first = atoi(line + 1);
+
+	char *parens_close = strchr(comma + 1, ')');
+	*parens_close = '\0';
+	*second = atoi(comma + 1);
+
+	*distance = atoi(parens_close + 2);
+
+	return TRUE;
+}

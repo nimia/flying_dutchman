@@ -10,4 +10,6 @@ bool_t parse_simple_space_delimited_line(char *line, Vertex_Num *first, Vertex_N
 
 bool_t parse_usa_challenge_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance);
 
+bool_t parse_boost_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance);
+
 #endif

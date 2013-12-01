@@ -31,14 +31,6 @@
 
 using namespace boost;
 
-double min(double a, double b)
-{
-	if (a > b) {
-		return b;
-	}
-	return a;
-}
-
 int main(int argc, char* argv[])
 {
 	if (argc != 4) {
@@ -79,62 +71,6 @@ int main(int argc, char* argv[])
     put(edge_weight, g, *ei, weight);
     output_file << *ei << ' ' << weight << std::endl;
   }
-
-  std::vector<double> relaxed_heap_distances(n);
-  std::vector<double> no_color_map_distances(n);
-
-  // Run relaxed heap version
-  timer t;
-  dijkstra_relaxed_heap = true;
-  t.restart();
-  dijkstra_shortest_paths(g, vertex(0, g),
-                          distance_map(&relaxed_heap_distances[0]));
-  double dijkstra_time = t.elapsed();
-
-  dijkstra_relaxed_heap = false;
-  t.restart();
-  dijkstra_shortest_paths(g, vertex(0, g),
-                          distance_map(&relaxed_heap_distances[0]));
-  dijkstra_time = min(dijkstra_time, t.elapsed());
-
-  // Run Michael's no-color-map version
-  dijkstra_relaxed_heap = true;
-  t.restart();
-  dijkstra_shortest_paths_no_color_map
-    (g, vertex(0, g),
-     boost::dummy_property_map(),
-     boost::make_iterator_property_map(&no_color_map_distances[0],
-                                       get(boost::vertex_index, g),
-                                       0.),
-     get(boost::edge_weight, g),
-     get(boost::vertex_index, g),
-     std::less<double>(),
-     boost::closed_plus<double>(),
-     (std::numeric_limits<double>::max)(),
-     0,
-     make_dijkstra_visitor(null_visitor())
-     );
-  dijkstra_time = min(dijkstra_time, t.elapsed());
-
-  dijkstra_relaxed_heap = false;
-  t.restart();
-  dijkstra_shortest_paths_no_color_map
-    (g, vertex(0, g),
-     boost::dummy_property_map(),
-     boost::make_iterator_property_map(&no_color_map_distances[0],
-                                       get(boost::vertex_index, g),
-                                       0.),
-     get(boost::edge_weight, g),
-     get(boost::vertex_index, g),
-     std::less<double>(),
-     boost::closed_plus<double>(),
-     (std::numeric_limits<double>::max)(),
-     0,
-     make_dijkstra_visitor(null_visitor())
-     );
-  dijkstra_time = min(dijkstra_time, t.elapsed());
-
-  output_file << "Algorithm took " << dijkstra_time << " seconds." << std::endl;
 
   return 0;
 }
