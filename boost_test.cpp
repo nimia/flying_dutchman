@@ -71,7 +71,7 @@ std::ofstream output_file;
 
 void print_distances(std::vector<int32_t> &distances)
 {
-	for (int i = 0; i <= BOOST__NUM_OF_VERTICES; i++) {
+	for (int i = 0; i < distances.size(); i++) {
 		if (distances[i] != INT32_MAX) {
 			output_file << i << " " << distances[i] << std::endl;
 		}
