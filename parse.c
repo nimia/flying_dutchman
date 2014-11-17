@@ -31,6 +31,25 @@ bool_t parse_usa_challenge_line(char *line, Vertex_Num *first, Vertex_Num *secon
 	return parse_delimiter_based_line(line, ' ', first, second, distance, 2);
 }
 
+bool_t parse_p2p_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	char *start = line;
+	char *end = strchr(start, ' ');
+	*end = '\0';
+	*first = atoi(start);
+
+	start = end + 1;
+	end = strchr(start, ' ');
+	*end = '\0';
+	*second = atoi(start);
+
+	start = end + 1;
+	float distance_float = atof(start);
+	*distance = (int)(distance_float * 10000);
+
+	return TRUE;
+}
+
 bool_t parse_simple_space_delimited_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
 {
 	if (!strcmp(line, "\r\n") || !strcmp(line, "\n")) {

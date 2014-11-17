@@ -1,4 +1,4 @@
-ALL: test
+ALL: test boost er_generator
  
 flying_dutchman: *.c *.h
 	gcc -I./monotonic_queue -std=c11 -Ofast -mcmodel=large -Wall -Wextra -pedantic -Wno-write-strings -Wformat parse.c \

@@ -44,7 +44,7 @@ typedef adjacency_list<vecS, vecS, directedS, no_property,
 
 #define BOOST__NUM_OF_VERTICES 23947348
 
-void load_graph(char *filename, line_parse_func_t *parse_line, Graph &g)
+void load_graph(char *filename, line_parse_func_t *parse_line, Graph &g, bool_t bidirectional_edges)
 {
 	FILE *f = fopen(filename, "r");
 	char line[128];
@@ -60,6 +60,9 @@ void load_graph(char *filename, line_parse_func_t *parse_line, Graph &g)
 			}
 
 			add_edge(vertex(first, g), vertex(second, g), distance, g);
+			if (bidirectional_edges) {
+				add_edge(vertex(second, g), vertex(first, g), distance, g);
+			}
 			DEBUG("%d => %d, distance %d\n", first, second, distance);
 		}
 	}
@@ -93,9 +96,11 @@ int main(int argc, char* argv[])
   char *graph_path = argv[2];
 
   if (!strcmp(argv[1], "usa")) {
-	  load_graph(graph_path, &parse_usa_challenge_line, g);
+	  load_graph(graph_path, &parse_usa_challenge_line, g, FALSE);
   } else if (!strcmp(argv[1], "er")) {
-	  load_graph(graph_path, &parse_boost_line, g);
+	  load_graph(graph_path, &parse_boost_line, g, FALSE);
+  } else if (!strcmp(argv[1], "p2p")) {
+	  load_graph(graph_path, &parse_p2p_line, g, TRUE);
   } else {
 	  printf("Not sure what you want, check your arguments\n");
 	  exit(1);
@@ -107,7 +112,7 @@ int main(int argc, char* argv[])
 
   std::string graph_basename = my_basename(graph_path);
   printf("Basename is %s\n", graph_basename.c_str());
-  std::string output_file_path = "/localwork/boost_results_on_";
+  std::string output_file_path = "/localwork/dijkstra/boost_results_on_";
   output_file_path += graph_basename;
   output_file_path += "_";
   output_file_path += lexical_cast<std::string>(starting_vertex);
