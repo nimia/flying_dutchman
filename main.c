@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
 #define RESULTS_PATH "/localwork/dijkstra"
 
 	bool_t bidirectional_edges = 100;
+	bool_t summary = FALSE;
 	if (!strcmp(argv[1], "bf")) {
 		algorithm = &bellman_ford;
 		sprintf(output_file_path, RESULTS_PATH"/bf_results_on_");
@@ -112,6 +113,16 @@ int main(int argc, char *argv[])
 		bidirectional_edges = FALSE;
 	} else if (!strcmp(argv[1], "dijkstra")) {
 		algorithm = &dijkstra;
+		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
+		parse_line = &parse_usa_challenge_line;
+		bidirectional_edges = FALSE;
+	} else if (!strcmp(argv[1], "summary")) {
+		algorithm = &dijkstra;
+		summary = TRUE;
+		srand(time(NULL));
+		starting_vertex = (rand() % 23000000) + 1;
+		printf("%d", starting_vertex);
+		fflush(stdout);
 		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
 		parse_line = &parse_usa_challenge_line;
 		bidirectional_edges = FALSE;
@@ -138,19 +149,20 @@ int main(int argc, char *argv[])
 	}
 	load_graph(argv[2], parse_line, &the_graph, bidirectional_edges);
 
-	if (strlen(output_file_path)) {
+	if (!summary) {
 		output_file = fopen(output_file_path, "w");
-	} else {
-		output_file = stdin;
+		fprintf(output_file, "Starting algorithm %s on graph %s, from starting vertex %d\n",
+				algorithm_name(algorithm), argv[2], starting_vertex);
 	}
-
-	fprintf(output_file, "Starting algorithm %s on graph %s, from starting vertex %d\n",
-			algorithm_name(algorithm), argv[2], starting_vertex);
 
 	clock_t start = clock();
 	(*algorithm)(&the_graph, starting_vertex, the_queue);
 	clock_t end = clock();
 
+	if (summary) {
+		printf(" %f\n", (float)(end - start) / CLOCKS_PER_SEC);
+		exit(0);
+	}
 	fprintf(output_file, "Algorithm took %f seconds\n", (float)(end - start) / CLOCKS_PER_SEC);
 	print_distances(&the_graph);
 

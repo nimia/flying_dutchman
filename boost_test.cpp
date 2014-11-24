@@ -95,7 +95,11 @@ int main(int argc, char* argv[])
 
   char *graph_path = argv[2];
 
+  bool_t summary = FALSE;
   if (!strcmp(argv[1], "usa")) {
+	  load_graph(graph_path, &parse_usa_challenge_line, g, FALSE);
+  } else if (!strcmp(argv[1], "summary")) {
+	  summary = TRUE;
 	  load_graph(graph_path, &parse_usa_challenge_line, g, FALSE);
   } else if (!strcmp(argv[1], "er")) {
 	  load_graph(graph_path, &parse_boost_line, g, FALSE);
@@ -107,18 +111,23 @@ int main(int argc, char* argv[])
   }
 
   int starting_vertex = atoi(argv[3]);
+  if (summary) {
+	  printf("%d", starting_vertex);
+  }
   std::vector<int32_t> relaxed_heap_distances(BOOST__NUM_OF_VERTICES);
   std::vector<int32_t> no_color_map_distances(BOOST__NUM_OF_VERTICES);
 
   std::string graph_basename = my_basename(graph_path);
-  printf("Basename is %s\n", graph_basename.c_str());
-  std::string output_file_path = "/localwork/dijkstra/boost_results_on_";
-  output_file_path += graph_basename;
-  output_file_path += "_";
-  output_file_path += lexical_cast<std::string>(starting_vertex);
-  printf("Output file is %s\n", output_file_path.c_str());
-  output_file.open(output_file_path.c_str());
-  output_file << "Starting Boost Dijkstra on graph " << graph_basename << ", from starting vertex " << starting_vertex << std::endl;
+  if (!summary) {
+	  printf("Basename is %s\n", graph_basename.c_str());
+	  std::string output_file_path = "/localwork/dijkstra/boost_results_on_";
+	  output_file_path += graph_basename;
+	  output_file_path += "_";
+	  output_file_path += lexical_cast<std::string>(starting_vertex);
+	  printf("Output file is %s\n", output_file_path.c_str());
+	  output_file.open(output_file_path.c_str());
+	  output_file << "Starting Boost Dijkstra on graph " << graph_basename << ", from starting vertex " << starting_vertex << std::endl;
+  }
 
   timer t;
   dijkstra_relaxed_heap = true;
@@ -169,7 +178,12 @@ int main(int argc, char* argv[])
      );
   dijkstra_time = min(dijkstra_time, t.elapsed());
 
-  output_file << "Algorithm took " << dijkstra_time << " seconds." << std::endl;
+  if (summary) {
+	std::cout << " " << dijkstra_time << std::endl;
+	exit(0);
+  } else {
+	  output_file << "Algorithm took " << dijkstra_time << " seconds." << std::endl;
+  }
 
   print_distances(relaxed_heap_distances);
 

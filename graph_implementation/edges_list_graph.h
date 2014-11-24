@@ -28,7 +28,7 @@ typedef struct Vertex {
 	list_for_each_entry(edge_iterator, &(vertex)->edges_list, list)
 
 #define GRAPH__MAX_NUM_OF_VERTICES 23947348
-#define GRAPH__MAX_NUM_OF_EDGES 80000000
+#define GRAPH__MAX_NUM_OF_EDGES 664471360
 
 typedef struct Graph {
 	int32_t max_vertex_num;
