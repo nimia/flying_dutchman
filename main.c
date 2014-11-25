@@ -116,6 +116,12 @@ int main(int argc, char *argv[])
 		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
 		parse_line = &parse_usa_challenge_line;
 		bidirectional_edges = FALSE;
+	} else if (!strcmp(argv[1], "proteins")) {
+		printf("sizeof(Graph) = %lu\n", sizeof(Graph));
+		algorithm = &dijkstra;
+		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
+		parse_line = &parse_proteins_line;
+		bidirectional_edges = FALSE;
 	} else if (!strcmp(argv[1], "summary")) {
 		algorithm = &dijkstra;
 		summary = TRUE;

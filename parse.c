@@ -31,6 +31,15 @@ bool_t parse_usa_challenge_line(char *line, Vertex_Num *first, Vertex_Num *secon
 	return parse_delimiter_based_line(line, ' ', first, second, distance, 2);
 }
 
+bool_t parse_proteins_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	if (!strcmp(line, "\r\n") || !strcmp(line, "\n") || line[0] == 'c' || line[0] == 'p') {
+		return FALSE;
+	}
+
+	return parse_delimiter_based_line(line, ' ', first, second, distance, 0);
+}
+
 bool_t parse_p2p_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
 {
 	char *start = line;
