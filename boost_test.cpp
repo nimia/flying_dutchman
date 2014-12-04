@@ -42,7 +42,7 @@ using namespace boost;
 typedef adjacency_list<vecS, vecS, directedS, no_property,
                        property<edge_weight_t, int32_t> > Graph;
 
-#define BOOST__NUM_OF_VERTICES 23947348
+#define BOOST__NUM_OF_VERTICES 5000000
 
 void load_graph(char *filename, line_parse_func_t *parse_line, Graph &g, bool_t bidirectional_edges)
 {
@@ -105,6 +105,8 @@ int main(int argc, char* argv[])
 	  load_graph(graph_path, &parse_boost_line, g, FALSE);
   } else if (!strcmp(argv[1], "p2p")) {
 	  load_graph(graph_path, &parse_p2p_line, g, TRUE);
+  } else if (!strcmp(argv[1], "proteins")) {
+	  load_graph(graph_path, &parse_proteins_line, g, FALSE);
   } else {
 	  printf("Not sure what you want, check your arguments\n");
 	  exit(1);
