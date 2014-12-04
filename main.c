@@ -118,6 +118,7 @@ int main(int argc, char *argv[])
 		bidirectional_edges = FALSE;
 	} else if (!strcmp(argv[1], "proteins")) {
 		printf("sizeof(Graph) = %lu\n", sizeof(Graph));
+		printf("sizeof(Queue) = %lu\n", sizeof(Queue));
 		algorithm = &dijkstra;
 		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
 		parse_line = &parse_proteins_line;
@@ -131,6 +132,16 @@ int main(int argc, char *argv[])
 		fflush(stdout);
 		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
 		parse_line = &parse_usa_challenge_line;
+		bidirectional_edges = FALSE;
+	} else if (!strcmp(argv[1], "summary-proteins")) {
+		algorithm = &dijkstra;
+		summary = TRUE;
+		srand(time(NULL));
+		starting_vertex = (rand() % 4000000) + 1;
+		printf("%d", starting_vertex);
+		fflush(stdout);
+		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
+		parse_line = &parse_proteins_line;
 		bidirectional_edges = FALSE;
 	} else if (!strcmp(argv[1], "er")) {
 		algorithm = &dijkstra;

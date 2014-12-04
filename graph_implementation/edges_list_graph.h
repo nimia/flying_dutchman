@@ -10,22 +10,28 @@
 typedef struct Vertex Vertex;
 #include "queue__per_vertex_data.h"
 
+#define INVALID_EDGE (-1)
+
 typedef struct Edge {
-	Vertex *dest;
+	int32_t dest_vertex_index;
 	Distance distance;
-	struct list_head list;
+	int32_t next_edge_index;
 } Edge;
 
 typedef struct Vertex {
 	Vertex_Num vertex_num;
 	Distance distance;
-	struct list_head edges_list;
+	int32_t first_edge_index;
 
 	Queue__Per_Vertex_Data queue_data;
 } Vertex;
 
-#define Vertex__FOR_EACH_EDGE(vertex, edge_iterator) \
-	list_for_each_entry(edge_iterator, &(vertex)->edges_list, list)
+#define Edge__DEST(edge, graph) (&(graph)->vertices[(edge)->dest_vertex_index])
+
+#define Vertex__FOR_EACH_EDGE(vertex, edge_iterator, graph)                      \
+	for ((edge_iterator) = &(graph)->edges[(vertex)->first_edge_index];          \
+         (edge_iterator) != &(graph)->edges[INVALID_EDGE];                       \
+         (edge_iterator) = &(graph)->edges[(edge_iterator)->next_edge_index])    \
 
 #define GRAPH__MAX_NUM_OF_VERTICES 5000000
 #define GRAPH__MAX_NUM_OF_EDGES 664471360
@@ -37,9 +43,10 @@ typedef struct Graph {
 	Edge edges[GRAPH__MAX_NUM_OF_EDGES];
 } Graph;
 
-static inline void Vertex__add_edge(Vertex *v, Edge *e)
+static inline void Vertex__add_edge(Vertex *v, Edge *e, Graph *g)
 {
-	list_add_tail(&e->list, &v->edges_list);
+	e->next_edge_index = v->first_edge_index;
+	v->first_edge_index = e - g->edges;
 }
 
 static inline void Graph__reset(Graph *graph)
@@ -48,7 +55,7 @@ static inline void Graph__reset(Graph *graph)
 		Vertex *vertex = &graph->vertices[i];
 		vertex->vertex_num = i;
 		vertex->distance = DISTANCE__INFINITY;
-		INIT_LIST_HEAD(&vertex->edges_list);
+		vertex->first_edge_index = INVALID_EDGE;
 		Queue__Per_Vertex_data__init(&vertex->queue_data);
 	}
 
@@ -64,10 +71,10 @@ static inline void Graph__add_edge(Graph *graph, Vertex *from, Vertex *to, Dista
 	}
 
 	Edge *e = &graph->edges[graph->num_of_edges];
-	e->dest = to;
+	e->dest_vertex_index = to->vertex_num;
 	e->distance = distance;
 	graph->num_of_edges++;
-	Vertex__add_edge(from, e);
+	Vertex__add_edge(from, e, graph);
 }
 
 #endif
