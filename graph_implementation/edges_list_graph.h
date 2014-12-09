@@ -33,7 +33,7 @@ typedef struct Vertex {
          (edge_iterator) != &(graph)->edges[INVALID_EDGE];                       \
          (edge_iterator) = &(graph)->edges[(edge_iterator)->next_edge_index])    \
 
-#define GRAPH__MAX_NUM_OF_VERTICES 5000000
+#define GRAPH__MAX_NUM_OF_VERTICES 10000000
 #define GRAPH__MAX_NUM_OF_EDGES 664471360
 
 typedef struct Graph {

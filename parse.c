@@ -40,6 +40,11 @@ bool_t parse_proteins_line(char *line, Vertex_Num *first, Vertex_Num *second, Di
 	return parse_delimiter_based_line(line, ' ', first, second, distance, 0);
 }
 
+bool_t parse_ba_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
+{
+	return parse_delimiter_based_line(line, ' ', first, second, distance, 0);
+}
+
 bool_t parse_p2p_line(char *line, Vertex_Num *first, Vertex_Num *second, Distance *distance)
 {
 	char *start = line;

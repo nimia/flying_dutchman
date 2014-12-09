@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 		algorithm = &dijkstra;
 		summary = TRUE;
 		srand(time(NULL));
-		starting_vertex = (rand() % 4000000) + 1;
+		starting_vertex = atoi(argv[3]);
 		printf("%d", starting_vertex);
 		fflush(stdout);
 		sprintf(output_file_path, RESULTS_PATH"/my_results_on_");
